@@ -1,13 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:padding="16dp"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <EditText android:id="@+id/email" android:hint="Email"
-        android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <EditText android:id="@+id/password" android:hint="Password" android:inputType="textPassword"
-        android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/btnLogin" android:text="Login"
-        android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp"/>
-    <Button android:id="@+id/btnRegister" android:text="Register (disabled)"
-        android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="25dp">
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="match_parent"
+        android:layout_height="275dp"
+        android:paddingBottom="30dp"
+        app:srcCompat="@drawable/driverlogin" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Login"
+        android:textColorLink="#3859DE"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Register (disabled)"
+        android:textColorHighlight="#3859DE"
+        android:textColorHint="#3859DE"
+        android:textColorLink="#3859DE"
+        android:textSize="20dp"
+        app:iconTint="#3859DE"
+        app:rippleColor="#3859DE" />
 </LinearLayout>
