@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="770dp"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginTop="1dp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#80000000"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tvEta"
+            android:layout_width="173dp"
+            android:layout_height="wrap_content"
+            android:text="ETA: -"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnComplete"
+            android:layout_width="322dp"
+            android:layout_height="71dp"
+            android:layout_marginTop="6dp"
+            android:background="#664FA3"
+            android:text="Mark Completed"
+            android:textColorLink="#3A97ED"
+            android:textSize="24sp" />
+    </LinearLayout>
+</RelativeLayout>

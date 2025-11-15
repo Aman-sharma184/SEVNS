@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:paddingBottom="30dp">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="255dp"
+        android:layout_height="228dp"
+        android:paddingBottom="10dp"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:text="SEVNS Accident Assistant"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="18dp"
+        android:backgroundTint="#1A7DD6"
+        android:drawableLeft="@android:drawable/ic_menu_report_image"
+        android:drawablePadding="12dp"
+        android:elevation="4dp"
+        android:padding="16dp"
+        android:text="🚨 Report Accident"
+        android:textColor="#fff"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btnHospital"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
+        android:backgroundTint="#1A7DD6"
+        android:drawableLeft="@android:drawable/ic_menu_myplaces"
+        android:drawablePadding="12dp"
+        android:elevation="4dp"
+        android:padding="16dp"
+        android:text="🏥 Hospital Login"
+        android:textColor="#fff"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnAmbulance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#145997"
+        android:drawableLeft="@android:drawable/ic_menu_directions"
+        android:drawablePadding="12dp"
+        android:elevation="4dp"
+        android:padding="16dp"
+        android:text="🚑 Driver Login"
+        android:textColor="#fff"
+        android:textSize="18sp" />
+
+</LinearLayout>
