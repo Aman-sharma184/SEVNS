@@ -1,5 +1,7 @@
 package com.group_43.sevns;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.*;
 
 public class SimulatedDatabase {
@@ -7,7 +9,6 @@ public class SimulatedDatabase {
     private static final Map<String, String> userCredentials = new HashMap<>();
 
     static {
-        userCredentials.put("hospital@emergency.com", "hospital123");
         userCredentials.put("driver1@ambulance.com", "driver123");
     }
 
@@ -16,12 +17,6 @@ public class SimulatedDatabase {
         return stored != null && stored.equals(password);
     }
 
-    public static void saveReport(AccidentReport report) {
-        if (report.getId() == null) {
-            report.setId(UUID.randomUUID().toString());
-        }
-        reports.put(report.getId(), report);
-    }
 
     public static AccidentReport getReportById(String id) {
         return reports.get(id);

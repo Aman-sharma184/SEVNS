@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="app_name">SEVNS</string>
+    <string name="firebase_database_url" translatable="false">https://sevns-1fdd3-default-rtdb.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">280044377711</string>
+    <string name="google_api_key" translatable="false">AIzaSyC-xXP0OC6XOz0rt-LnIB1m-YOVipASzJg</string>
+    <string name="google_app_id" translatable="false">1:280044377711:android:b6a28fea320603ea321f9a</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyC-xXP0OC6XOz0rt-LnIB1m-YOVipASzJg</string>
+    <string name="google_storage_bucket" translatable="false">sevns-1fdd3.firebasestorage.app</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="project_id" translatable="false">sevns-1fdd3</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="welcome">"Welcome !"</string>
+    <style name="Base.Theme.SEVNS" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
+    <style name="Theme.SEVNS" parent="Base.Theme.SEVNS"/>
+</resources>

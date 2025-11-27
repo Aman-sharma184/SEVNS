@@ -1,35 +1,45 @@
 package com.group_43.sevns;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class HospitalLoginActivity extends AppCompatActivity {
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+public class HospitalLoginActivity extends AppCompatActivity {
     private EditText editEmail, editPassword;
     private Button btnLogin, btnRegister;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hospital_login);
 
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
         editEmail = findViewById(R.id.email);
         editPassword = findViewById(R.id.password);
         btnLogin = findViewById(R.id.btnLogin);
-        //btnRegister = findViewById(R.id.btnRegister);
-
-        // Simulated pre-filled credentials for testing
-        editEmail.setText("hospital@emergency.com");
-        editPassword.setText("hospital123");
+        btnRegister = findViewById(R.id.btnRegister);
 
         btnLogin.setOnClickListener(v -> handleLogin());
-
-        // Registration is not implemented for the simulated app
-        //btnRegister.setOnClickListener(v -> Toast.makeText(this, "Registration not available in this demo.", Toast.LENGTH_SHORT).show());
+        btnRegister.setOnClickListener(v -> startActivity(new Intent(this, HospitalRegisterActivity.class)));
     }
 
     private void handleLogin() {
@@ -37,18 +47,22 @@ public class HospitalLoginActivity extends AppCompatActivity {
         String password = editPassword.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter both email and password.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Enter email and password.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (SimulatedDatabase.authenticateUser(email, password)) {
-            Toast.makeText(this, "Hospital Login Successful!", Toast.LENGTH_SHORT).show();
-            // Navigate to the dashboard
-            Intent intent = new Intent(HospitalLoginActivity.this, HospitalDashboardActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Invalid credentials for Hospital.", Toast.LENGTH_LONG).show();
-        }
+        // 1. Sign in with Firebase Authentication
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+
+                        Toast.makeText(HospitalLoginActivity.this, "login in success", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(HospitalLoginActivity.this, HospitalDashboardActivity.class));
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(HospitalLoginActivity.this, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

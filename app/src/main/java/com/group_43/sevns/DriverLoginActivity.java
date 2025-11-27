@@ -7,13 +7,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class DriverLoginActivity extends AppCompatActivity {
 
     private EditText editEmail, editPassword;
     private Button btnLogin, btnRegister;
-
-    // Hardcoded driver ID for use after successful login
-    private static final String DRIVER_ID = "driver1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,10 +23,6 @@ public class DriverLoginActivity extends AppCompatActivity {
         editPassword = findViewById(R.id.password);
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
-
-        // Simulated pre-filled credentials for testing
-        editEmail.setText("driver1@ambulance.com");
-        editPassword.setText("driver123");
 
         btnLogin.setOnClickListener(v -> handleLogin());
 
@@ -44,15 +39,19 @@ public class DriverLoginActivity extends AppCompatActivity {
             return;
         }
 
-        if (SimulatedDatabase.authenticateUser(email, password)) {
-            Toast.makeText(this, "Driver Login Successful! Redirecting to map...", Toast.LENGTH_SHORT).show();
-            // Navigate to the map activity
-            Intent intent = new Intent(DriverLoginActivity.this, DriverMapActivity.class);
-            intent.putExtra("DRIVER_ID", DRIVER_ID);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Invalid credentials for Driver.", Toast.LENGTH_LONG).show();
-        }
+        // 1. Sign in with Firebase Authentication
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+
+                        Toast.makeText(DriverLoginActivity.this, "login in success", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(DriverLoginActivity.this, HospitalDashboardActivity.class));
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(DriverLoginActivity.this, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

@@ -1,5 +1,6 @@
 package com.group_43.sevns;
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -46,9 +47,9 @@ public class DriverMapActivity extends AppCompatActivity {
 
         findAndDisplayAssignedReport();
         btnComplete.setOnClickListener(v -> markReportCompleted());
-        btnComplete.setEnabled(false);
     }
 
+    @SuppressLint("SetTextI18n")
     private void findAndDisplayAssignedReport() {
         for (AccidentReport report : SimulatedDatabase.getActiveReports()) {
             if (driverId != null && driverId.equals(report.getDriverId()) && "Dispatched".equals(report.getStatus())) {
@@ -61,8 +62,8 @@ public class DriverMapActivity extends AppCompatActivity {
             btnComplete.setEnabled(true);
             setupMapAndRoute();
         } else {
-            tvEta.setText("No active reports assigned to you.");
-            Toast.makeText(this, "No assigned reports.", Toast.LENGTH_LONG).show();
+            tvEta.setText("No assigned case to you.");
+            Toast.makeText(this, "No assigned Case.", Toast.LENGTH_LONG).show();
             btnComplete.setEnabled(false);
         }
     }
@@ -82,8 +83,9 @@ public class DriverMapActivity extends AppCompatActivity {
         Marker m = new Marker(map);
         m.setPosition(accidentPoint);
         m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        m.setTitle("Accident: " + assignedReport.getDescription());
+        m.setTitle("Accident: " + assignedReport.getDescription() + "\n\n" + assignedReport.getAddress());
         map.getOverlays().add(m);
+        btnComplete.setEnabled(true);
 
         // TODO: replace with free routing ETA (OpenRouteService) if you want real ETA
         tvEta.setText("ETA: 15 mins (Simulated)");
