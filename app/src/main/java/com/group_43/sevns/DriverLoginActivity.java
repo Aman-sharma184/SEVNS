@@ -25,9 +25,7 @@ public class DriverLoginActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
 
         btnLogin.setOnClickListener(v -> handleLogin());
-
-        // Registration is not implemented for the simulated app
-        btnRegister.setOnClickListener(v -> Toast.makeText(this, "Registration not available in this demo.", Toast.LENGTH_SHORT).show());
+        btnRegister.setOnClickListener(v -> startActivity(new Intent(this, DriverRegister.class)));
     }
 
     private void handleLogin() {
@@ -46,7 +44,7 @@ public class DriverLoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
 
                         Toast.makeText(DriverLoginActivity.this, "login in success", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(DriverLoginActivity.this, HospitalDashboardActivity.class));
+                        startActivity(new Intent(DriverLoginActivity.this, DriverMapActivity.class));
                     } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(DriverLoginActivity.this, "Authentication failed.",

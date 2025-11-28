@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HospitalLoginActivity extends AppCompatActivity {
     private EditText editEmail, editPassword;
@@ -55,7 +56,8 @@ public class HospitalLoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-
+                        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        checkHospitalInFirestore(uid);
                         Toast.makeText(HospitalLoginActivity.this, "login in success", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(HospitalLoginActivity.this, HospitalDashboardActivity.class));
                     } else {
@@ -65,4 +67,38 @@ public class HospitalLoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private void checkHospitalInFirestore(String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("Hospitals")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(document -> {
+
+                    if (document.exists()) {
+
+                        String storedUid = document.getString("uid");
+
+                        if (storedUid != null && storedUid.startsWith("hospital-")) {
+
+                            Toast.makeText(this, "Hospital Login Successful", Toast.LENGTH_SHORT).show();
+                            new HospitalDashboardActivity();
+
+                        } else {
+                            FirebaseAuth.getInstance().signOut();
+                            Toast.makeText(this, "Not a hospital account", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else {
+                        FirebaseAuth.getInstance().signOut();
+                        Toast.makeText(this, "Hospital record not found", Toast.LENGTH_SHORT).show();
+                    }
+
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
 }
+

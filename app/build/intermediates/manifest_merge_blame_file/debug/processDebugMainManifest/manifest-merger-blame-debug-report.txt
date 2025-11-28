@@ -92,7 +92,7 @@
 48-->[androidx.core:core:1.13.0] C:\Users\Aman\.gradle\caches\8.13\transforms\3d362bcd87f57e34936b3085de746d4a\transformed\core-1.13.0\AndroidManifest.xml:26:22-94
 49
 50    <application
-50-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:13:5-35:19
+50-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:13:5-36:19
 51        android:allowBackup="true"
 51-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:14:9-35
 52        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -107,45 +107,47 @@
 57-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:17:9-54
 58        android:supportsRtl="true"
 58-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:18:9-35
-59        android:testOnly="true"
-60        android:theme="@style/Theme.Material3.DayNight.NoActionBar" >
-60-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:19:9-68
+59        android:theme="@style/Theme.Material3.DayNight.NoActionBar" >
+59-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:19:9-68
+60        <activity android:name="com.group_43.sevns.DriverRegister" />
+60-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:20:9-52
+60-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:20:19-49
 61        <activity android:name="com.group_43.sevns.DriverMapActivity" />
-61-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:20:9-55
-61-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:20:19-52
+61-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:21:9-55
+61-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:21:19-52
 62        <activity android:name="com.group_43.sevns.DriverLoginActivity" />
-62-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:21:9-57
-62-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:21:19-54
+62-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:22:9-57
+62-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:22:19-54
 63        <activity android:name="com.group_43.sevns.HospitalDashboardActivity" />
-63-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:22:9-63
-63-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:22:19-60
+63-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:23:9-63
+63-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:23:19-60
 64        <activity android:name="com.group_43.sevns.HospitalLoginActivity" />
-64-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:23:9-59
-64-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:23:19-56
+64-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:24:9-59
+64-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:24:19-56
 65        <activity android:name="com.group_43.sevns.AccidentStatusActivity" />
-65-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:24:9-60
-65-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:24:19-57
+65-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:25:9-60
+65-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:25:19-57
 66        <activity android:name="com.group_43.sevns.AccidentReportingActivity" />
-66-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:25:9-63
-66-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:25:19-60
+66-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:26:9-63
+66-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:26:19-60
 67        <activity android:name="com.group_43.sevns.HospitalRegisterActivity" />
-67-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:26:9-62
-67-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:26:19-59
+67-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:27:9-62
+67-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:27:19-59
 68        <activity
-68-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:27:9-34:20
+68-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:28:9-35:20
 69            android:name="com.group_43.sevns.MainActivity"
-69-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:28:13-41
+69-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:29:13-41
 70            android:exported="true" >
-70-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:29:13-36
+70-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:30:13-36
 71            <intent-filter>
-71-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:30:13-33:29
+71-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:31:13-34:29
 72                <action android:name="android.intent.action.MAIN" />
-72-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:31:17-69
-72-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:31:25-66
+72-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:32:17-69
+72-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:32:25-66
 73
 74                <category android:name="android.intent.category.LAUNCHER" />
-74-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:32:17-77
-74-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:32:27-74
+74-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:33:17-77
+74-->C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:33:27-74
 75            </intent-filter>
 76        </activity>
 77

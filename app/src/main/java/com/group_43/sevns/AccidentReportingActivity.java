@@ -249,7 +249,8 @@ public class AccidentReportingActivity extends AppCompatActivity {
             btnReport.setEnabled(false);
 
         db.collection("Accidents")
-                .add(data)
+                .document(caseId)
+                .set(data)
                 .addOnSuccessListener(documentReference ->
                         Toast.makeText(this, "Data sent to Nearest Hospital!", Toast.LENGTH_SHORT).show()
                 )

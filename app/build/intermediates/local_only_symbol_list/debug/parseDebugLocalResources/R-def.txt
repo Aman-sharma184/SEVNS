@@ -19,6 +19,7 @@ id btnHospitalRegister
 id btnLogin
 id btnRefresh
 id btnRegister
+id btnRegisterDriver
 id btnRegisterHospital
 id btnReport
 id btnUser
@@ -26,6 +27,10 @@ id btnsignOut
 id btntrackCase
 id editCaseid
 id editDesc
+id editDriverEmail
+id editDriverName
+id editDriverPassword
+id editDriverPhone
 id editHospitalAddress
 id editHospitalEmail
 id editHospitalName
@@ -52,6 +57,7 @@ layout accident_reporting
 layout activity_accident_status
 layout activity_main
 layout driver_login
+layout driver_register
 layout driver_screen
 layout hospital_dashboard
 layout hospital_login

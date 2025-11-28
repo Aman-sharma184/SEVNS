@@ -24,6 +24,7 @@ import com.google.android.gms.location.Priority;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONObject;
 
@@ -176,7 +177,6 @@ public class HospitalRegisterActivity extends AppCompatActivity {
         }).start();
     }
 
-
     private void registerHospital() {
 
         String name = editName.getText().toString().trim();
@@ -185,11 +185,10 @@ public class HospitalRegisterActivity extends AppCompatActivity {
         String address = editAddress.getText().toString().trim();
         String phone = editPhone.getText().toString().trim();
 
-
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phone.isEmpty() || address.isEmpty()) {
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty() ||
+                phone.isEmpty() || address.isEmpty()) {
 
             Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
-
             return;
         }
 
@@ -198,13 +197,40 @@ public class HospitalRegisterActivity extends AppCompatActivity {
             return;
         }
 
+        if (lastKnownLocation == null) {
+            Toast.makeText(this, "Waiting for location...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
 
                     if (task.isSuccessful()) {
 
-                        Toast.makeText(this, "Hospital Registered Successfully!", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(this, HospitalLoginActivity.class));
+                        String uid = "Hospital-" + FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                        HospitalRegisteration data = new HospitalRegisteration(
+                                uid,
+                                name,
+                                email,
+                                address,
+                                phone,
+                                lastKnownLocation.getLatitude(),
+                                lastKnownLocation.getLongitude()
+                        );
+
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                        db.collection("Hospitals")
+                                .document(uid)   // Always use UID as doc ID
+                                .set(data)
+                                .addOnSuccessListener(a -> {
+                                    Toast.makeText(this, "Hospital Registered Successfully!", Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(this, HospitalLoginActivity.class));
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                                );
 
                     } else {
                         Toast.makeText(this,
@@ -213,4 +239,33 @@ public class HospitalRegisterActivity extends AppCompatActivity {
                     }
                 });
     }
+    public static class HospitalRegisteration {
+
+        public String uid;
+        public String name;
+        public String email;
+        public String address;
+        public String phone;
+        public double latitude;
+        public double longitude;
+
+        // Empty constructor REQUIRED by Firebase
+        public HospitalRegisteration() {
+        }
+
+        // Full constructor
+        public HospitalRegisteration(String uid, String name, String email,
+                                     String address, String phone,
+                                     double latitude, double longitude) {
+
+            this.uid = uid;
+            this.name = name;
+            this.email = email;
+            this.phone = phone;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+
+    }
+
 }

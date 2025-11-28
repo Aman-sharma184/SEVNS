@@ -3851,6 +3851,7 @@ id btnHospitalRegister
 id btnLogin
 id btnRefresh
 id btnRegister
+id btnRegisterDriver
 id btnRegisterHospital
 id btnReport
 id btnUser
@@ -3937,6 +3938,10 @@ id east
 id edge
 id editCaseid
 id editDesc
+id editDriverEmail
+id editDriverName
+id editDriverPassword
+id editDriverPhone
 id editHospitalAddress
 id editHospitalEmail
 id editHospitalName
@@ -4444,6 +4449,7 @@ layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
 layout driver_login
+layout driver_register
 layout driver_screen
 layout hospital_dashboard
 layout hospital_login

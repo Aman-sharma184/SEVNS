@@ -1,15 +1,142 @@
 package com.group_43.sevns;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
-public class DriverRegisterActivity implements DriverRegister {
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+public class DriverRegister extends AppCompatActivity {
+
+    private EditText editName, editEmail, editPassword, editAddress, editPhone;
+    private FirebaseAuth mAuth;
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.driver_login);
+        setContentView(R.layout.driver_register);
+        editName = findViewById(R.id.editDriverName);
+        editEmail = findViewById(R.id.editDriverEmail);
+        editPassword = findViewById(R.id.editDriverPassword);
+        editPhone = findViewById(R.id.editDriverPhone);
+        Button btnRegister = findViewById(R.id.btnRegisterDriver);
 
+        mAuth = FirebaseAuth.getInstance();
 
+        btnRegister.setOnClickListener(v -> registerDriver());
+    }
 
-    
+    private static String generateCaseId() {
+        int randomNum = (int) (Math.random() * 90000) + 10000; // 5-digit
+        return "DRIVER" + randomNum;
+    }
+
+    private void createUniqueCaseId(FirebaseFirestore db, OnDriverIdGenerated callback) {
+
+        String newDriver_ID = generateCaseId();
+
+        db.collection("Drivers")
+                .whereEqualTo("Driver_ID", newDriver_ID)
+                .get()
+                .addOnSuccessListener(query -> {
+
+                    if (query.isEmpty()) {
+                        // Unique ID Found
+                        callback.onGenerated(newDriver_ID);
+                    } else {
+                        // Duplicate → generate again
+                        createUniqueCaseId(db, callback);
+                    }
+
+                })
+                .addOnFailureListener(e ->
+                        callback.onGenerated(null) // error
+                );
+    }
+
+    public interface OnDriverIdGenerated {
+        void onGenerated(String caseId);
+    }
+
+    private void registerDriver() {
+        String name = editName.getText().toString().trim();
+        String email = editEmail.getText().toString().trim();
+        String password = editPassword.getText().toString().trim();
+        String phone = editPhone.getText().toString().trim();
+
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty() ||
+                phone.isEmpty()) {
+
+            Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (password.length() < 6) {
+            Toast.makeText(this, "Password must be at least 6 characters.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+
+                    if (task.isSuccessful()) {
+
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                        createUniqueCaseId(db, uid -> {
+                            if (uid == null) {
+                                        Toast.makeText(this, "Error generating Case ID!", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                        DriverRegisteration data = new DriverRegisteration(
+                                uid,
+                                name,
+                                email,
+                                phone
+                        );
+
+                        db.collection("Drivers")// Always use UID as doc ID
+                                .add(data)
+                                .addOnSuccessListener(a -> {
+                                    Toast.makeText(this, "Driver Registered Successfully!", Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(this, DriverLoginActivity.class));
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                                );
+                        });
+                    } else {
+                        Toast.makeText(this,
+                                "Registration Error: " + task.getException().getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+
+    }
+
+    public static class DriverRegisteration {
+
+        public String Driver_ID;
+        public String name;
+        public String email;
+        public String phone;
+        // Empty constructor REQUIRED by Firebase
+        public DriverRegisteration() {
+        }
+
+        // Full constructor
+        public DriverRegisteration(String Driver_ID, String name, String email, String phone) {
+
+            this.Driver_ID = Driver_ID;
+            this.name = name;
+            this.email = email;
+            this.phone = phone;
+        }
+
+    }
 }

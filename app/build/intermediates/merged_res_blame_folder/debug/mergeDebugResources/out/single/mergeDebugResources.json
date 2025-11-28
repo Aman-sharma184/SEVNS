@@ -4,6 +4,10 @@
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\layout\\hospital_login.xml"
     },
     {
+        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\layout_driver_register.xml.flat",
+        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\layout\\driver_register.xml"
+    },
+    {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
@@ -124,10 +128,6 @@
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\drawable\\logo.jpg"
     },
     {
-        "merged": "com.group_43.sevns.app-debug-52:/layout_activity_accident_status.xml.flat",
-        "source": "com.group_43.sevns.app-main-54:/layout/activity_accident_status.xml"
-    },
-    {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\layout_accident_reporting.xml.flat",
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\layout\\accident_reporting.xml"
     },
@@ -158,5 +158,9 @@
     {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\xml_data_extraction_rules.xml.flat",
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\xml\\data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.group_43.sevns.app-debug-52:/layout_driver_login.xml.flat",
+        "source": "com.group_43.sevns.app-main-54:/layout/driver_login.xml"
     }
 ]

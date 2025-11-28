@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:2:1-37:12
-INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:2:1-37:12
-INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:2:1-37:12
-INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:2:1-37:12
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:2:1-38:12
 MERGED from [androidx.databinding:viewbinding:8.13.1] C:\Users\Aman\.gradle\caches\8.13\transforms\a9eb470e531a00c9f1851bfd6753def4\transformed\viewbinding-8.13.1\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.13.0] C:\Users\Aman\.gradle\caches\8.13\transforms\63dbe12afb90ea3d75b5510f0e34156f\transformed\material-1.13.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.2.1] C:\Users\Aman\.gradle\caches\8.13\transforms\1c0f6ef4bc9303f5d2c87ebd08149c1c\transformed\constraintlayout-2.2.1\AndroidManifest.xml:2:1-9:12
@@ -164,8 +164,8 @@ ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:9
 	android:name
 		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:10:9-65
 application
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:13:5-35:19
-INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:13:5-35:19
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:13:5-36:19
+INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:13:5-36:19
 MERGED from [com.google.android.material:material:1.13.0] C:\Users\Aman\.gradle\caches\8.13\transforms\63dbe12afb90ea3d75b5510f0e34156f\transformed\material-1.13.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.13.0] C:\Users\Aman\.gradle\caches\8.13\transforms\63dbe12afb90ea3d75b5510f0e34156f\transformed\material-1.13.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.2.1] C:\Users\Aman\.gradle\caches\8.13\transforms\1c0f6ef4bc9303f5d2c87ebd08149c1c\transformed\constraintlayout-2.2.1\AndroidManifest.xml:7:5-20
@@ -250,50 +250,54 @@ MERGED from [com.google.android.play:core-common:2.0.3] C:\Users\Aman\.gradle\ca
 		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:14:9-35
 	android:theme
 		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:19:9-68
+activity#com.group_43.sevns.DriverRegister
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:20:9-52
+	android:name
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:20:19-49
 activity#com.group_43.sevns.DriverMapActivity
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:20:9-55
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:21:9-55
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:20:19-52
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:21:19-52
 activity#com.group_43.sevns.DriverLoginActivity
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:21:9-57
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:22:9-57
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:21:19-54
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:22:19-54
 activity#com.group_43.sevns.HospitalDashboardActivity
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:22:9-63
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:23:9-63
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:22:19-60
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:23:19-60
 activity#com.group_43.sevns.HospitalLoginActivity
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:23:9-59
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:24:9-59
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:23:19-56
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:24:19-56
 activity#com.group_43.sevns.AccidentStatusActivity
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:24:9-60
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:25:9-60
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:24:19-57
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:25:19-57
 activity#com.group_43.sevns.AccidentReportingActivity
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:25:9-63
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:26:9-63
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:25:19-60
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:26:19-60
 activity#com.group_43.sevns.HospitalRegisterActivity
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:26:9-62
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:27:9-62
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:26:19-59
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:27:19-59
 activity#com.group_43.sevns.MainActivity
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:27:9-34:20
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:28:9-35:20
 	android:exported
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:29:13-36
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:30:13-36
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:28:13-41
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:29:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:30:13-33:29
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:31:13-34:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:31:17-69
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:32:17-69
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:31:25-66
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:32:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:32:17-77
+ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:33:17-77
 	android:name
-		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:32:27-74
+		ADDED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml:33:27-74
 uses-sdk
 INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\Aman\StudioProjects\SEVNS\app\src\main\AndroidManifest.xml

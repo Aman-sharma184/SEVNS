@@ -13,7 +13,6 @@ public class AccidentReport {
     private String hospitalId;
 
     public AccidentReport() {}
-
     public AccidentReport(String id, double latitude, double longitude, String phone,
                           String description, String address, String status,
                           long timestamp, String driverId, String hospitalId) {

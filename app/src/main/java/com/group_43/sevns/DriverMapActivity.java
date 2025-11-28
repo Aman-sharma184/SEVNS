@@ -42,7 +42,6 @@ public class DriverMapActivity extends AppCompatActivity {
         btnComplete = findViewById(R.id.btnComplete);
         map = findViewById(R.id.map);
 
-        driverId = getIntent().getStringExtra("DRIVER_ID");
         requestPermissionsIfNecessary(REQUIRED_PERMISSIONS);
 
         findAndDisplayAssignedReport();

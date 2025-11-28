@@ -22,16 +22,17 @@
             android:id="@+id/tvTrackingId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="50dp"
             android:text="Case ID:"
+            android:layout_marginTop="50dp"
             android:textSize="20sp" />
 
         <EditText
             android:id="@+id/editCaseid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ems="10"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/border"
             android:hint="Please enter a case number"
             android:inputType="text"
             android:textSize="20dp" />

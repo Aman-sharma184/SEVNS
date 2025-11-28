@@ -59,12 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Register (disabled)"
-        android:textColorHighlight="#3859DE"
-        android:textColorHint="#3859DE"
-        android:textColorLink="#3859DE"
-        android:textSize="20dp"
-        app:iconTint="#3859DE"
-        app:rippleColor="#3859DE" />
+        android:text="Register Driver"
+        android:textSize="20sp" />
 
 </LinearLayout>
