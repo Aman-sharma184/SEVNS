@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -24,6 +25,9 @@ public final class ActivityMainBinding implements ViewBinding {
   public final Button btnAmbulance;
 
   @NonNull
+  public final Button btnDriverRegister;
+
+  @NonNull
   public final Button btnHospital;
 
   @NonNull
@@ -38,16 +42,22 @@ public final class ActivityMainBinding implements ViewBinding {
   @NonNull
   public final ImageView imageView2;
 
+  @NonNull
+  public final TextView textView;
+
   private ActivityMainBinding(@NonNull LinearLayout rootView, @NonNull Button btnAmbulance,
-      @NonNull Button btnHospital, @NonNull Button btnHospitalRegister, @NonNull Button btnUser,
-      @NonNull Button btntrackCase, @NonNull ImageView imageView2) {
+      @NonNull Button btnDriverRegister, @NonNull Button btnHospital,
+      @NonNull Button btnHospitalRegister, @NonNull Button btnUser, @NonNull Button btntrackCase,
+      @NonNull ImageView imageView2, @NonNull TextView textView) {
     this.rootView = rootView;
     this.btnAmbulance = btnAmbulance;
+    this.btnDriverRegister = btnDriverRegister;
     this.btnHospital = btnHospital;
     this.btnHospitalRegister = btnHospitalRegister;
     this.btnUser = btnUser;
     this.btntrackCase = btntrackCase;
     this.imageView2 = imageView2;
+    this.textView = textView;
   }
 
   @Override
@@ -83,6 +93,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnDriverRegister;
+      Button btnDriverRegister = ViewBindings.findChildViewById(rootView, id);
+      if (btnDriverRegister == null) {
+        break missingId;
+      }
+
       id = R.id.btnHospital;
       Button btnHospital = ViewBindings.findChildViewById(rootView, id);
       if (btnHospital == null) {
@@ -113,8 +129,14 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityMainBinding((LinearLayout) rootView, btnAmbulance, btnHospital,
-          btnHospitalRegister, btnUser, btntrackCase, imageView2);
+      id = R.id.textView;
+      TextView textView = ViewBindings.findChildViewById(rootView, id);
+      if (textView == null) {
+        break missingId;
+      }
+
+      return new ActivityMainBinding((LinearLayout) rootView, btnAmbulance, btnDriverRegister,
+          btnHospital, btnHospitalRegister, btnUser, btntrackCase, imageView2, textView);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

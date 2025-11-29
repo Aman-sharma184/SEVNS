@@ -14,6 +14,7 @@ drawable reportaccident
 id addressTextView
 id btnAmbulance
 id btnComplete
+id btnDriverRegister
 id btnHospital
 id btnHospitalRegister
 id btnLogin
@@ -48,6 +49,7 @@ id imageView7
 id listReports
 id map
 id password
+id textView
 id tvEta
 id tvHospitalLocation
 id tvStatus

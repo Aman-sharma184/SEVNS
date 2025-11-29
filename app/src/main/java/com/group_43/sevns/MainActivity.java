@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
         Button btnAmbulance = findViewById(R.id.btnAmbulance);
         Button btnHospitalRegister = findViewById(R.id.btnHospitalRegister);
         Button btntrackCase = findViewById(R.id.btntrackCase);
+        Button btnDriverRegister = findViewById(R.id.btnDriverRegister);
+
 
 
         btnUser.setOnClickListener(v ->
@@ -35,5 +37,8 @@ public class MainActivity extends AppCompatActivity {
         btntrackCase.setOnClickListener(v ->
                 startActivity(new Intent(this, AccidentStatusActivity.class)));
 
-    }
+        btnDriverRegister.setOnClickListener(v -> {
+            startActivity(new Intent(this, DriverRegister.class));
+        });
+        }
 }
