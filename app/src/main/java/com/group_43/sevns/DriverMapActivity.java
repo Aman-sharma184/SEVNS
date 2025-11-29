@@ -2,6 +2,7 @@ package com.group_43.sevns;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,6 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -23,7 +27,7 @@ import java.util.ArrayList;
 public class DriverMapActivity extends AppCompatActivity {
     private MapView map;
     private TextView tvEta;
-    private Button btnComplete;
+    private Button btnComplete, btndriverSignOut;
     private String driverId;
     private AccidentReport assignedReport;
 
@@ -40,12 +44,14 @@ public class DriverMapActivity extends AppCompatActivity {
 
         tvEta = findViewById(R.id.tvEta);
         btnComplete = findViewById(R.id.btnComplete);
+        btndriverSignOut = findViewById(R.id.btndriverSignOut);
         map = findViewById(R.id.map);
 
         requestPermissionsIfNecessary(REQUIRED_PERMISSIONS);
 
         findAndDisplayAssignedReport();
         btnComplete.setOnClickListener(v -> markReportCompleted());
+        btndriverSignOut.setOnClickListener(v -> signOut());
     }
 
     @SuppressLint("SetTextI18n")
@@ -65,6 +71,11 @@ public class DriverMapActivity extends AppCompatActivity {
             Toast.makeText(this, "No assigned Case.", Toast.LENGTH_LONG).show();
             btnComplete.setEnabled(false);
         }
+    }
+
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     private void setupMapAndRoute() {

@@ -3855,6 +3855,7 @@ int id btnRegisterDriver 0x7f080079
 int id btnRegisterHospital 0x7f08007a
 int id btnReport 0x7f08007b
 int id btnUser 0x7f08007c
+int id btndriverSignOut 0x7f080243
 int id btnsignOut 0x7f08007d
 int id btntrackCase 0x7f08007e
 int id bubble_description 0x7f08007f

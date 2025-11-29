@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class DriverLoginActivity extends AppCompatActivity {
 
@@ -43,13 +44,39 @@ public class DriverLoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
 
-                        Toast.makeText(DriverLoginActivity.this, "login in success", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(DriverLoginActivity.this, DriverMapActivity.class));
+                        String uid = "Driver-" + FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        checkDriverInFirestore(uid);
+
                     } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(DriverLoginActivity.this, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show();
                     }
+                });
+    }
+    private void checkDriverInFirestore(String uid) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("Drivers")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(document -> {
+
+                        String storedUid = document.getString("Driver_ID");
+
+                        if (storedUid != null && storedUid.startsWith("DRIVER")) {
+
+                            Toast.makeText(this, "Driver Login Successful", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(DriverLoginActivity.this, DriverMapActivity.class));
+
+                        } else {
+                            FirebaseAuth.getInstance().signOut();
+                            Toast.makeText(this, "Not a Driver account", Toast.LENGTH_SHORT).show();
+                        }
+
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 }

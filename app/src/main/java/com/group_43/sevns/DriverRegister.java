@@ -31,14 +31,14 @@ public class DriverRegister extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> registerDriver());
     }
 
-    private static String generateCaseId() {
+    private static String generateDriverId() {
         int randomNum = (int) (Math.random() * 90000) + 10000; // 5-digit
         return "DRIVER" + randomNum;
     }
 
     private void createUniqueCaseId(FirebaseFirestore db, OnDriverIdGenerated callback) {
 
-        String newDriver_ID = generateCaseId();
+        String newDriver_ID = generateDriverId();
 
         db.collection("Drivers")
                 .whereEqualTo("Driver_ID", newDriver_ID)
@@ -60,7 +60,7 @@ public class DriverRegister extends AppCompatActivity {
     }
 
     public interface OnDriverIdGenerated {
-        void onGenerated(String caseId);
+        void onGenerated(String driverId);
     }
 
     private void registerDriver() {
@@ -84,24 +84,26 @@ public class DriverRegister extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
 
                     if (task.isSuccessful()) {
+                        String doc_id = "Driver-" + FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                        createUniqueCaseId(db, uid -> {
-                            if (uid == null) {
-                                        Toast.makeText(this, "Error generating Case ID!", Toast.LENGTH_SHORT).show();
+                        createUniqueCaseId(db, driverid -> {
+                            if (driverid == null) {
+                                        Toast.makeText(this, "Error generating Driver ID!", Toast.LENGTH_SHORT).show();
                                         return;
                                     }
 
                         DriverRegisteration data = new DriverRegisteration(
-                                uid,
+                                driverid,
                                 name,
                                 email,
                                 phone
                         );
 
-                        db.collection("Drivers")// Always use UID as doc ID
-                                .add(data)
+                        db.collection("Drivers")
+                                .document(doc_id)   // Always use UID as doc ID
+                                .set(data)
                                 .addOnSuccessListener(a -> {
                                     Toast.makeText(this, "Driver Registered Successfully!", Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(this, DriverLoginActivity.class));

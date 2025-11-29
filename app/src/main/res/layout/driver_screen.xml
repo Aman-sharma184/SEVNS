@@ -27,7 +27,7 @@
             <org.osmdroid.views.MapView
                 android:id="@+id/map"
                 android:layout_width="wrap_content"
-                android:layout_height="646dp"
+                android:layout_height="614dp"
                 android:layout_marginTop="1dp"
                 android:clipToPadding="false">
 
@@ -36,12 +36,22 @@
             <Button
                 android:id="@+id/btnComplete"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="67dp"
                 android:layout_marginTop="6dp"
                 android:text="Mark Completed"
                 android:textColorLink="#3A97ED"
                 android:textSize="24sp"
                 app:cornerRadius="15dp" />
+
+            <Button
+                android:id="@+id/btndriverSignOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:text="Sign Out" />
+
         </LinearLayout>
     </ScrollView>
 

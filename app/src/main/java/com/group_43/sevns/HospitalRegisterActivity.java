@@ -261,6 +261,7 @@ public class HospitalRegisterActivity extends AppCompatActivity {
             this.uid = uid;
             this.name = name;
             this.email = email;
+            this.address = address;
             this.phone = phone;
             this.latitude = latitude;
             this.longitude = longitude;

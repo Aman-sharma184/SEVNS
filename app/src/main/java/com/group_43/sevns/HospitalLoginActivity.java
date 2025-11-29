@@ -56,10 +56,8 @@ public class HospitalLoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        String uid = "Hospital-" + FirebaseAuth.getInstance().getCurrentUser().getUid();
                         checkHospitalInFirestore(uid);
-                        Toast.makeText(HospitalLoginActivity.this, "login in success", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(HospitalLoginActivity.this, HospitalDashboardActivity.class));
                     } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(HospitalLoginActivity.this, "Authentication failed.",
@@ -80,10 +78,10 @@ public class HospitalLoginActivity extends AppCompatActivity {
 
                         String storedUid = document.getString("uid");
 
-                        if (storedUid != null && storedUid.startsWith("hospital-")) {
+                        if (storedUid != null && storedUid.startsWith("Hospital-")) {
 
                             Toast.makeText(this, "Hospital Login Successful", Toast.LENGTH_SHORT).show();
-                            new HospitalDashboardActivity();
+                            startActivity(new Intent(HospitalLoginActivity.this, HospitalDashboardActivity.class));
 
                         } else {
                             FirebaseAuth.getInstance().signOut();
