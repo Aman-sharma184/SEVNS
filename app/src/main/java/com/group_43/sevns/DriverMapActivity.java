@@ -793,7 +793,9 @@ public class DriverMapActivity extends AppCompatActivity {
                             String driverDocId = querySnapshot.getDocuments().get(0).getId();
                             db.collection("Drivers")
                                     .document(driverDocId)
-                                    .update("status", "Unavailable");
+                                    .update("status", "Unavailable",
+                                            "hospitalId", "",
+                                            "hospitalName", "");
                         }
                     });
 
