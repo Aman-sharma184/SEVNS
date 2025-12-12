@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -19,7 +19,7 @@ import java.lang.String;
 
 public final class HospitalLoginBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final ScrollView rootView;
 
   @NonNull
   public final Button btnLogin;
@@ -36,7 +36,7 @@ public final class HospitalLoginBinding implements ViewBinding {
   @NonNull
   public final TextInputEditText password;
 
-  private HospitalLoginBinding(@NonNull LinearLayout rootView, @NonNull Button btnLogin,
+  private HospitalLoginBinding(@NonNull ScrollView rootView, @NonNull Button btnLogin,
       @NonNull Button btnRegister, @NonNull TextInputEditText email, @NonNull ImageView imageView6,
       @NonNull TextInputEditText password) {
     this.rootView = rootView;
@@ -49,7 +49,7 @@ public final class HospitalLoginBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public ScrollView getRoot() {
     return rootView;
   }
 
@@ -104,7 +104,7 @@ public final class HospitalLoginBinding implements ViewBinding {
         break missingId;
       }
 
-      return new HospitalLoginBinding((LinearLayout) rootView, btnLogin, btnRegister, email,
+      return new HospitalLoginBinding((ScrollView) rootView, btnLogin, btnRegister, email,
           imageView6, password);
     }
     String missingId = rootView.getResources().getResourceName(id);

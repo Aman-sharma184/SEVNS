@@ -25,17 +25,40 @@ public final class HospitalDashboardBinding implements ViewBinding {
   public final Button btnsignOut;
 
   @NonNull
+  public final LinearLayout emptyStateContainer;
+
+  @NonNull
+  public final TextView hospitalName;
+
+  @NonNull
   public final ListView listReports;
 
   @NonNull
-  public final TextView textView2;
+  public final TextView tvAssignedCases;
+
+  @NonNull
+  public final TextView tvCaseCount;
+
+  @NonNull
+  public final TextView tvDashboardTitle;
+
+  @NonNull
+  public final TextView tvNoReports;
 
   private HospitalDashboardBinding(@NonNull LinearLayout rootView, @NonNull Button btnsignOut,
-      @NonNull ListView listReports, @NonNull TextView textView2) {
+      @NonNull LinearLayout emptyStateContainer, @NonNull TextView hospitalName,
+      @NonNull ListView listReports, @NonNull TextView tvAssignedCases,
+      @NonNull TextView tvCaseCount, @NonNull TextView tvDashboardTitle,
+      @NonNull TextView tvNoReports) {
     this.rootView = rootView;
     this.btnsignOut = btnsignOut;
+    this.emptyStateContainer = emptyStateContainer;
+    this.hospitalName = hospitalName;
     this.listReports = listReports;
-    this.textView2 = textView2;
+    this.tvAssignedCases = tvAssignedCases;
+    this.tvCaseCount = tvCaseCount;
+    this.tvDashboardTitle = tvDashboardTitle;
+    this.tvNoReports = tvNoReports;
   }
 
   @Override
@@ -71,20 +94,50 @@ public final class HospitalDashboardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.emptyStateContainer;
+      LinearLayout emptyStateContainer = ViewBindings.findChildViewById(rootView, id);
+      if (emptyStateContainer == null) {
+        break missingId;
+      }
+
+      id = R.id.hospital_name;
+      TextView hospitalName = ViewBindings.findChildViewById(rootView, id);
+      if (hospitalName == null) {
+        break missingId;
+      }
+
       id = R.id.listReports;
       ListView listReports = ViewBindings.findChildViewById(rootView, id);
       if (listReports == null) {
         break missingId;
       }
 
-      id = R.id.textView2;
-      TextView textView2 = ViewBindings.findChildViewById(rootView, id);
-      if (textView2 == null) {
+      id = R.id.tvAssignedCases;
+      TextView tvAssignedCases = ViewBindings.findChildViewById(rootView, id);
+      if (tvAssignedCases == null) {
         break missingId;
       }
 
-      return new HospitalDashboardBinding((LinearLayout) rootView, btnsignOut, listReports,
-          textView2);
+      id = R.id.tvCaseCount;
+      TextView tvCaseCount = ViewBindings.findChildViewById(rootView, id);
+      if (tvCaseCount == null) {
+        break missingId;
+      }
+
+      id = R.id.tvDashboardTitle;
+      TextView tvDashboardTitle = ViewBindings.findChildViewById(rootView, id);
+      if (tvDashboardTitle == null) {
+        break missingId;
+      }
+
+      id = R.id.tvNoReports;
+      TextView tvNoReports = ViewBindings.findChildViewById(rootView, id);
+      if (tvNoReports == null) {
+        break missingId;
+      }
+
+      return new HospitalDashboardBinding((LinearLayout) rootView, btnsignOut, emptyStateContainer,
+          hospitalName, listReports, tvAssignedCases, tvCaseCount, tvDashboardTitle, tvNoReports);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

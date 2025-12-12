@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.Priority;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -30,18 +29,22 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.UUID;
+import java.util.Collections;
+import java.util.List;
 
 public class AccidentReportingActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private static final int INITIAL_RADIUS_KM = 10;
+    private static final int RADIUS_INCREMENT_KM = 5;
+    private static final int MAX_RADIUS_KM = 100;
+
     private TextView addressTextView, tvStatus;
     private EditText editPhone, editDesc;
     private Button btnReport;
     private FusedLocationProviderClient fusedLocationClient;
     private Location lastKnownLocation;
     private LocationCallback locationCallback;
-    private String currentReportId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,22 +59,16 @@ public class AccidentReportingActivity extends AppCompatActivity {
         btnReport = findViewById(R.id.btnReport);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         btnReport.setEnabled(false);
 
-        // Callbacks and permissions
         setupLocationCallback();
         requestLocationPermission();
-
         btnReport.setOnClickListener(v -> submitReport());
     }
 
-
-    // PERMISSIONS
     private void requestLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(
                     this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -100,7 +97,7 @@ public class AccidentReportingActivity extends AppCompatActivity {
             }
         }
     }
-// LOCATION HANDLING
+
     private void setupLocationCallback() {
         locationCallback = new LocationCallback() {
             @Override
@@ -118,7 +115,6 @@ public class AccidentReportingActivity extends AppCompatActivity {
     }
 
     private void startLocationUpdates() {
-
         LocationRequest locationRequest =
                 new LocationRequest.Builder(
                         Priority.PRIORITY_HIGH_ACCURACY,
@@ -134,18 +130,13 @@ public class AccidentReportingActivity extends AppCompatActivity {
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, getMainLooper());
     }
 
-    // REVERSE GEOCODING
     @SuppressLint("SetTextI18n")
     private void getAddressFromCoordinates(double lat, double lon) {
-
         new Thread(() -> {
             try {
                 String urlStr = "https://nominatim.openstreetmap.org/reverse?lat=" + lat + "&lon=" + lon + "&format=json";
-
                 HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
                 conn.setRequestMethod("GET");
-
-                // IMPORTANT: Required by Nominatim
                 conn.setRequestProperty("User-Agent", "HospitalApp/1.0");
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -163,8 +154,6 @@ public class AccidentReportingActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     addressTextView.setText(address);
                     btnReport.setEnabled(true);
-
-                    // Stop further location requests (avoid rate-limit)
                     fusedLocationClient.removeLocationUpdates(locationCallback);
                 });
 
@@ -174,40 +163,70 @@ public class AccidentReportingActivity extends AppCompatActivity {
         }).start();
     }
 
+    private void assignToHospital(FirebaseFirestore db, String caseId, AccidentReport accidentData, String hospitalId) {
+        accidentData.setAssignedHospitalId(hospitalId);
+        accidentData.setStatus("pending");
 
-    // REPORT SUBMISSION
+        db.collection("Accidents")
+                .document(caseId)
+                .set(accidentData)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Report sent to nearest hospital!", Toast.LENGTH_SHORT).show();
+                    navigateToStatus(caseId);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void markAsNoHospitalAvailable(FirebaseFirestore db, String caseId, AccidentReport accidentData) {
+        accidentData.setStatus("no_hospital_available");
+
+        db.collection("Accidents")
+                .document(caseId)
+                .set(accidentData)
+                .addOnSuccessListener(aVoid -> {
+                    tvStatus.setText("Status: No hospital available within 100 km");
+                    Toast.makeText(this, "No hospital available in your area", Toast.LENGTH_LONG).show();
+                    navigateToStatus(caseId);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private float calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        float[] results = new float[1];
+        Location.distanceBetween(lat1, lon1, lat2, lon2, results);
+        return results[0] / 1000; // Convert meters to km
+    }
 
     private static String generateCaseId() {
-        int randomNum = (int) (Math.random() * 90000) + 10000; // 5-digit
+        int randomNum = (int) (Math.random() * 90000) + 10000;
         return "CASE" + randomNum;
     }
 
     private void createUniqueCaseId(FirebaseFirestore db, OnCaseIdGenerated callback) {
-
         String newCaseId = generateCaseId();
 
         db.collection("Accidents")
                 .whereEqualTo("id", newCaseId)
                 .get()
                 .addOnSuccessListener(query -> {
-
                     if (query.isEmpty()) {
-                        // Unique ID Found
                         callback.onGenerated(newCaseId);
                     } else {
-                        // Duplicate → generate again
                         createUniqueCaseId(db, callback);
                     }
-
                 })
-                .addOnFailureListener(e ->
-                        callback.onGenerated(null) // error
-                );
+                .addOnFailureListener(e -> callback.onGenerated(null));
     }
 
     public interface OnCaseIdGenerated {
         void onGenerated(String caseId);
     }
+
     @SuppressLint("SetTextI18n")
     private void submitReport() {
         if (lastKnownLocation == null) {
@@ -226,42 +245,49 @@ public class AccidentReportingActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         createUniqueCaseId(db, caseId -> {
-
             if (caseId == null) {
                 Toast.makeText(this, "Error generating Case ID!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-        AccidentReport data = new AccidentReport(
-                caseId,
-                lastKnownLocation.getLatitude(),
-                lastKnownLocation.getLongitude(),
-                phone,
-                description,
-                addressTextView.getText().toString(),
-                "",
-                System.currentTimeMillis(),
-                "",
-                ""
-        );
+            AccidentReport data = new AccidentReport(
+                    caseId,
+                    lastKnownLocation.getLatitude(),
+                    lastKnownLocation.getLongitude(),
+                    phone,
+                    description,
+                    addressTextView.getText().toString(),
+                    "",
+                    "",
+                    System.currentTimeMillis(),
+                    "searching",
+                    ""
+            );
 
-            tvStatus.setText("Status: Report submitted! ID: " + caseId);
+            tvStatus.setText("Status: Searching for nearest hospital...");
             btnReport.setEnabled(false);
+            HospitalFinder finder = new HospitalFinder(this);
+            List<String> excludedHospitals = Collections.emptyList();
+            finder.findNearestHospital(caseId, data, excludedHospitals);
+            navigateToStatus(caseId);
+            db.collection("Accidents")
+                    .document(caseId)
+                    .set(data)
+                    .addOnSuccessListener(documentReference ->
+                            Toast.makeText(this, "Data sent to Nearest Hospital!", Toast.LENGTH_SHORT).show()
+                    )
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
+            navigateToStatus(caseId);
+        });
+    }
 
-        db.collection("Accidents")
-                .document(caseId)
-                .set(data)
-                .addOnSuccessListener(documentReference ->
-                        Toast.makeText(this, "Data sent to Nearest Hospital!", Toast.LENGTH_SHORT).show()
-                )
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
-
-        Intent intent = new Intent(this, AccidentStatusActivity.class);
+    private void navigateToStatus(String caseId) {
+        Intent intent = new Intent(this, TrackCaseActivity.class);
         intent.putExtra("CASE_ID", caseId);
         startActivity(intent);
         finish();
-        });
     }
+
 }

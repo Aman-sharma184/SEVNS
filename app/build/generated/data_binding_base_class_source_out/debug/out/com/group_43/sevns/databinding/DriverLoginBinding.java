@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -19,7 +19,7 @@ import java.lang.String;
 
 public final class DriverLoginBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final ScrollView rootView;
 
   @NonNull
   public final Button btnLogin;
@@ -36,7 +36,7 @@ public final class DriverLoginBinding implements ViewBinding {
   @NonNull
   public final TextInputEditText password;
 
-  private DriverLoginBinding(@NonNull LinearLayout rootView, @NonNull Button btnLogin,
+  private DriverLoginBinding(@NonNull ScrollView rootView, @NonNull Button btnLogin,
       @NonNull Button btnRegister, @NonNull TextInputEditText email, @NonNull ImageView imageView5,
       @NonNull TextInputEditText password) {
     this.rootView = rootView;
@@ -49,7 +49,7 @@ public final class DriverLoginBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public ScrollView getRoot() {
     return rootView;
   }
 
@@ -104,8 +104,8 @@ public final class DriverLoginBinding implements ViewBinding {
         break missingId;
       }
 
-      return new DriverLoginBinding((LinearLayout) rootView, btnLogin, btnRegister, email,
-          imageView5, password);
+      return new DriverLoginBinding((ScrollView) rootView, btnLogin, btnRegister, email, imageView5,
+          password);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

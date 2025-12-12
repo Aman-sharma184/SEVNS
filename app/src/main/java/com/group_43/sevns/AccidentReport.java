@@ -1,51 +1,64 @@
 package com.group_43.sevns;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccidentReport {
     private String id;
     private double latitude;
     private double longitude;
-    private String phone;
+    private String phoneNumber;
     private String description;
     private String address;
-    private String status;
+    private String assignedHospitalId, driverId;
     private long timestamp;
-    private String driverId;
-    private String hospitalId;
+    private String status;
+    private String responseMessage;
+    private List<String> declinedHospitals;
 
-    public AccidentReport() {}
-    public AccidentReport(String id, double latitude, double longitude, String phone,
-                          String description, String address, String status,
-                          long timestamp, String driverId, String hospitalId) {
+    public AccidentReport() {
+        this.declinedHospitals = new ArrayList<>();
+    }
+
+    public AccidentReport(String id, double latitude, double longitude, String phoneNumber,
+                          String description, String address, String assignedHospitalId, String driverId,
+                          long timestamp, String status, String responseMessage) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.phone = phone;
+        this.phoneNumber = phoneNumber;
         this.description = description;
         this.address = address;
-        this.status = "Pending";
-        this.timestamp = timestamp;
+        this.assignedHospitalId = assignedHospitalId;
         this.driverId = driverId;
-        this.hospitalId = hospitalId;
+        this.timestamp = timestamp;
+        this.status = status;
+        this.responseMessage = responseMessage;
+        this.declinedHospitals = new ArrayList<>();
     }
 
-
+    // Getters
     public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
     public double getLatitude() { return latitude; }
     public double getLongitude() { return longitude; }
-    public String getAddress() { return address; }
-    public String getPhoneNumber() { return phone; }
+    public String getPhoneNumber() { return phoneNumber; }
     public String getDescription() { return description; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getAddress() { return address; }
+    public String getAssignedHospitalId() { return assignedHospitalId; }
+    public String getdriverId() { return driverId; }
     public long getTimestamp() { return timestamp; }
-    public String getDriverId() { return driverId; }
-    public void setDriverId(String driverId) { this.driverId = driverId; }
+    public String getStatus() { return status; }
+
+    // Setters
+    public void setId(String id) { this.id = id; }
+    public void setAssignedHospitalId(String assignedHospitalId) { this.assignedHospitalId = assignedHospitalId; }
+    public void setStatus(String status) { this.status = status; }
 
     @Override
     public String toString() {
-        return " Case ID: " + id + "\nStatus: " + status + "\nDesc: " + description;
+        String statusDisplay = status != null ? status.toUpperCase() : "UNKNOWN";
+        return "Case: " + id + "\n" +
+                "Status: " + statusDisplay + "\n" +
+                "Contact: " + phoneNumber;
     }
-
 }
-

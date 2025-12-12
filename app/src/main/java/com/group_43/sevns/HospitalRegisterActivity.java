@@ -250,11 +250,9 @@ public class HospitalRegisterActivity extends AppCompatActivity {
         public double latitude;
         public double longitude;
 
-        // Empty constructor REQUIRED by Firebase
         public HospitalRegisteration() {
         }
 
-        // Full constructor
         public HospitalRegisteration(String uid, String name, String email,
                                      String address, String phone,
                                      double latitude, double longitude) {

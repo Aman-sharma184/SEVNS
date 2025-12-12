@@ -1,10 +1,13 @@
 package com.group_43.sevns;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,24 +15,25 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
+import java.util.Locale;
 
 public class HospitalDashboardActivity extends AppCompatActivity {
 
     private ListView listReports;
     private Button btnsignOut;
-    private List<AccidentReport> activeReports;
+    private TextView tvNoReports;
+    private TextView tvCaseCount, hospitalname;
+    private LinearLayout emptyStateContainer;
+    private List<AccidentReport> assignedReports;
     private ArrayAdapter<AccidentReport> adapter;
+    private String currentHospitalId;
 
-    private String nearestDocumentId = null;
-    private AccidentReport nearestAccident = null;
-
-    // Hospital location (example)
-    double hospitalLat = 31.1048;
-    double hospitalLng = 77.1734;
-
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,152 +41,249 @@ public class HospitalDashboardActivity extends AppCompatActivity {
 
         listReports = findViewById(R.id.listReports);
         btnsignOut = findViewById(R.id.btnsignOut);
+        tvNoReports = findViewById(R.id.tvNoReports);
+        tvCaseCount = findViewById(R.id.tvCaseCount);
+        hospitalname = findViewById(R.id.hospital_name);
+        emptyStateContainer = findViewById(R.id.emptyStateContainer);
 
-        activeReports = new ArrayList<>();
+        assignedReports = new ArrayList<>();
+
+        SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+        currentHospitalId = prefs.getString("userId", "");
+
+        if (currentHospitalId.isEmpty() && FirebaseAuth.getInstance().getCurrentUser() != null) {
+            currentHospitalId = "Hospital-" + FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
 
         adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
-                activeReports
+                assignedReports
         );
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("Hospitals")
+                .document(currentHospitalId)
+                .get()
+                .addOnSuccessListener(hospitalDoc -> {
+                            String hospitalName = hospitalDoc.getString("name");
+                            hospitalname.setText(hospitalName);
+                        }
+                );
+
 
         listReports.setAdapter(adapter);
 
-        fetchReports();
+        fetchAssignedReports();
 
         btnsignOut.setOnClickListener(v -> signOut());
 
         listReports.setOnItemClickListener((parent, view, position, id) -> {
-            AccidentReport selectedReport = activeReports.get(position);
+            AccidentReport selectedReport = assignedReports.get(position);
             showReportActionsDialog(selectedReport);
         });
     }
 
     private void signOut() {
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        try {
+            SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear();
+            editor.apply();
+
+            FirebaseAuth.getInstance().signOut();
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            Log.e("HOSPITAL", "Error during sign out", e);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
     }
 
-    //FETCH NEAREST & ALL PENDING ACCIDENTS
-    private void fetchReports() {
+
+    private void fetchAssignedReports() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("Accidents")
-                .whereEqualTo("status", "Pending")
+                .whereEqualTo("assignedHospitalId", currentHospitalId)
                 .addSnapshotListener((value, error) -> {
 
-                    if (error != null || value == null) return;
+                    if (error != null) {
+                        Log.e("HOSPITAL", "Error fetching reports: " + error.getMessage());
+                        return;
+                    }
 
-                    activeReports.clear();
-                    nearestDocumentId = null;
-                    nearestAccident = null;
+                    assignedReports.clear();
 
-                    double minDistance = Double.MAX_VALUE;
-
-                    for (DocumentSnapshot doc : value) {
-                        AccidentReport accident = doc.toObject(AccidentReport.class);
-                        activeReports.add(accident);
-
-                        double distance = getDistance(
-                                hospitalLat, hospitalLng,
-                                accident.getLatitude(), accident.getLongitude()
-                        );
-
-                        if (distance < minDistance) {
-                            minDistance = distance;
-                            nearestAccident = accident;
-                            nearestDocumentId = doc.getId();
+                    if (value != null && !value.isEmpty()) {
+                        for (DocumentSnapshot doc : value) {
+                            AccidentReport accident = doc.toObject(AccidentReport.class);
+                            if (accident != null) {
+                                String status = accident.getStatus();
+                                if (status != null &&
+                                        (status.equalsIgnoreCase("Pending") ||
+                                                status.equalsIgnoreCase("Acknowledged") ||
+                                                status.equalsIgnoreCase("Reached at Location"))) {
+                                    assignedReports.add(accident);
+                                }
+                            }
                         }
                     }
 
                     adapter.notifyDataSetChanged();
 
-                    if (nearestAccident != null) {
-                        Log.d("HOSPITAL", "Nearest accident ID = " + nearestDocumentId);
+                    if (tvCaseCount != null) {
+                        tvCaseCount.setText(String.valueOf(assignedReports.size()));
                     }
+
+                    if (emptyStateContainer != null) {
+                        emptyStateContainer.setVisibility(assignedReports.isEmpty() ?
+                                View.VISIBLE : View.GONE);
+                    }
+
+                    Log.d("HOSPITAL", "Assigned reports count: " + assignedReports.size());
+                    Log.d("HOSPITAL", "Current Hospital ID: " + currentHospitalId);
                 });
     }
-    // Distance calculator
+
     private double getDistance(double lat1, double lon1, double lat2, double lon2) {
         float[] results = new float[1];
         Location.distanceBetween(lat1, lon1, lat2, lon2, results);
         return results[0] / 1000;
     }
 
-
-    // Show dialog when hospital taps a case
     private void showReportActionsDialog(AccidentReport report) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Case ID: " + report.getId() +
-                        "\nStatus: " + report.getStatus())
-                .setMessage(
-                        "Details:\n" + report.getDescription() +
-                        "\n\nContact: " + report.getPhoneNumber() +
-                        "\n\nTimestamp: " + report.getTimestamp() +
-                        "\n\nLocation: " + report.getLatitude() + ", " + report.getLongitude() +
-                        "\n\nAddress: " + report.getAddress())
-                .setNeutralButton("Close", (dialog, id) -> dialog.dismiss());
-
-        if ("Pending".equals(report.getStatus())) {
-            builder.setPositiveButton("Acknowledge", (dialog, id) -> acknowledge());
-        }
-
-        builder.create().show();
-    }
-
-    String hospitalId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    private void acknowledge() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        if (nearestDocumentId == null) {
-            Toast.makeText(this, "No nearest accident found!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        //Find an available driver
+        db.collection("Hospitals")
+                .document(currentHospitalId)
+                .get()
+                .addOnSuccessListener(hospitalDoc -> {
+                    Double hospitalLat = hospitalDoc.getDouble("latitude");
+                    Double hospitalLon = hospitalDoc.getDouble("longitude");
+
+                    String distanceText = "";
+                    if (hospitalLat != null && hospitalLon != null) {
+                        double distance = getDistance(
+                                hospitalLat, hospitalLon,
+                                report.getLatitude(), report.getLongitude()
+                        );
+                        distanceText = "\n\nDistance: " + String.format("%.2f", distance) + " km";
+                    }
+
+                    String formattedTime = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+                            .format(new Date(report.getTimestamp()));
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Case ID: " + report.getId())
+                            .setMessage(
+                                    "Status: " + report.getStatus() + "\nDriver ID: " + report.getdriverId() +
+                                            "\n\nDescription:\n" + report.getDescription() +
+                                            "\n\nContact: " + report.getPhoneNumber() +
+                                            "\n\nTime: " + formattedTime +
+                                            distanceText +
+                                            "\n\nLocation:\n" + report.getAddress())
+                            .setNeutralButton("Close", (dialog, id) -> dialog.dismiss())
+                            .setPositiveButton("Track", (dialog, id) ->
+                                    Trackcase(report.getId())
+                            );
+
+                    if ("pending".equalsIgnoreCase(report.getStatus())) {
+                        builder.setPositiveButton("Accept", (dialog, id) ->
+                                acceptCase(report.getId())
+                        );
+                        builder.setNegativeButton("Decline", (dialog, id) ->
+                                declineCase(report.getId())
+                        );
+                    }
+
+                    builder.create().show();
+                });
+    }
+
+    private void Trackcase(String caseId) {
+        Intent intent = new Intent(this, TrackCaseActivity.class);
+        intent.putExtra("CASE_ID", caseId);
+        startActivity(intent);
+    }
+
+    private void acceptCase(String caseId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Find an available driver
         db.collection("Drivers")
                 .whereEqualTo("status", "Available")
                 .limit(1)
                 .get()
                 .addOnSuccessListener(driverSnap -> {
-
-
                     if (!driverSnap.isEmpty()) {
-
                         DocumentSnapshot driverDoc = driverSnap.getDocuments().get(0);
-                        String docUID = driverDoc.getId();// available driver UID
-                        String driverID = driverDoc.getString("Driver_ID");
-                        //Update accident info
+                        String driverDocId = driverDoc.getId();
+                        String driverId = driverDoc.getString("Driver_ID");
+
+                        // Update accident info
                         db.collection("Accidents")
-                                .document(nearestDocumentId)
+                                .document(caseId)
                                 .update(
                                         "status", "Acknowledged",
-                                        "driverId", driverID,
-                                        "hospitalId", hospitalId
+                                        "driverId", driverId,
+                                        "hospitalId", currentHospitalId
                                 )
                                 .addOnSuccessListener(unused -> {
-
-                                    // Mark driver Unavailable
                                     db.collection("Drivers")
-                                            .document(docUID)
+                                            .document(driverDocId)
                                             .update("status", "Unavailable")
                                             .addOnSuccessListener(u ->
-                                                    Toast.makeText(this, "Accident Accepted & Driver Assigned!", Toast.LENGTH_SHORT).show())
+                                                    Toast.makeText(this,
+                                                            "Case accepted! Driver assigned.",
+                                                            Toast.LENGTH_SHORT).show())
                                             .addOnFailureListener(e ->
-                                                    Toast.makeText(this, "Driver status update failed!", Toast.LENGTH_SHORT).show());
-
+                                                    Toast.makeText(this,
+                                                            "Driver update failed: " + e.getMessage(),
+                                                            Toast.LENGTH_SHORT).show());
                                 })
                                 .addOnFailureListener(e ->
-                                        Toast.makeText(this, "Accident update failed!", Toast.LENGTH_SHORT).show());
+                                        Toast.makeText(this,
+                                                "Failed to accept case: " + e.getMessage(),
+                                                Toast.LENGTH_SHORT).show());
 
                     } else {
-                        Toast.makeText(this, "No Available Driver Found!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No available driver found!", Toast.LENGTH_SHORT).show();
                     }
-
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Driver search failed!", Toast.LENGTH_SHORT).show());
-
-
-        fetchReports();
+                        Toast.makeText(this,
+                                "Driver search failed: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show());
     }
+
+    private void declineCase(String caseId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("Accidents")
+                .document(caseId)
+                .update("declinedHospitals", currentHospitalId,
+                        "assignedHospitalId", ""
+                )
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this,
+                            "Case declined. Searching for another hospital...",
+                            Toast.LENGTH_SHORT).show();
+                    HospitalFinder finder = new HospitalFinder(this);
+                    List<String> excludedHospitals = Collections.emptyList();
+                    AccidentReport AccidentReport = new AccidentReport();
+                    finder.findNearestHospital(caseId, AccidentReport, excludedHospitals);
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this,
+                                "Failed to decline case: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show());
+    }
+
+
 }

@@ -8,12 +8,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.group_43.sevns.R;
@@ -50,7 +50,7 @@ public final class AccidentReportingBinding implements ViewBinding {
   public final TextInputLayout phoneInputLayout;
 
   @NonNull
-  public final MaterialCardView statusCard;
+  public final CardView statusCard;
 
   @NonNull
   public final MaterialToolbar toolbar;
@@ -63,8 +63,7 @@ public final class AccidentReportingBinding implements ViewBinding {
       @NonNull TextInputLayout descInputLayout, @NonNull TextInputEditText editDesc,
       @NonNull TextInputEditText editPhone, @NonNull ImageView imageView4,
       @NonNull TextInputLayout locationInputLayout, @NonNull TextInputLayout phoneInputLayout,
-      @NonNull MaterialCardView statusCard, @NonNull MaterialToolbar toolbar,
-      @NonNull TextView tvStatus) {
+      @NonNull CardView statusCard, @NonNull MaterialToolbar toolbar, @NonNull TextView tvStatus) {
     this.rootView = rootView;
     this.addressTextView = addressTextView;
     this.btnReport = btnReport;
@@ -155,7 +154,7 @@ public final class AccidentReportingBinding implements ViewBinding {
       }
 
       id = R.id.statusCard;
-      MaterialCardView statusCard = ViewBindings.findChildViewById(rootView, id);
+      CardView statusCard = ViewBindings.findChildViewById(rootView, id);
       if (statusCard == null) {
         break missingId;
       }

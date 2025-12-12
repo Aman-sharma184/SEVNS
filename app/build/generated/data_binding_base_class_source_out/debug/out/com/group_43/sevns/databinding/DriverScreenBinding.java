@@ -5,10 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.group_43.sevns.R;
@@ -19,7 +20,7 @@ import org.osmdroid.views.MapView;
 
 public final class DriverScreenBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final RelativeLayout rootView;
 
   @NonNull
   public final Button btnComplete;
@@ -28,23 +29,36 @@ public final class DriverScreenBinding implements ViewBinding {
   public final Button btndriverSignOut;
 
   @NonNull
+  public final CardView cardStatus;
+
+  @NonNull
+  public final CardView cardView;
+
+  @NonNull
   public final MapView map;
 
   @NonNull
   public final TextView tvEta;
 
-  private DriverScreenBinding(@NonNull LinearLayout rootView, @NonNull Button btnComplete,
-      @NonNull Button btndriverSignOut, @NonNull MapView map, @NonNull TextView tvEta) {
+  @NonNull
+  public final TextView tvStatus;
+
+  private DriverScreenBinding(@NonNull RelativeLayout rootView, @NonNull Button btnComplete,
+      @NonNull Button btndriverSignOut, @NonNull CardView cardStatus, @NonNull CardView cardView,
+      @NonNull MapView map, @NonNull TextView tvEta, @NonNull TextView tvStatus) {
     this.rootView = rootView;
     this.btnComplete = btnComplete;
     this.btndriverSignOut = btndriverSignOut;
+    this.cardStatus = cardStatus;
+    this.cardView = cardView;
     this.map = map;
     this.tvEta = tvEta;
+    this.tvStatus = tvStatus;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public RelativeLayout getRoot() {
     return rootView;
   }
 
@@ -81,6 +95,18 @@ public final class DriverScreenBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.cardStatus;
+      CardView cardStatus = ViewBindings.findChildViewById(rootView, id);
+      if (cardStatus == null) {
+        break missingId;
+      }
+
+      id = R.id.cardView;
+      CardView cardView = ViewBindings.findChildViewById(rootView, id);
+      if (cardView == null) {
+        break missingId;
+      }
+
       id = R.id.map;
       MapView map = ViewBindings.findChildViewById(rootView, id);
       if (map == null) {
@@ -93,8 +119,14 @@ public final class DriverScreenBinding implements ViewBinding {
         break missingId;
       }
 
-      return new DriverScreenBinding((LinearLayout) rootView, btnComplete, btndriverSignOut, map,
-          tvEta);
+      id = R.id.tvStatus;
+      TextView tvStatus = ViewBindings.findChildViewById(rootView, id);
+      if (tvStatus == null) {
+        break missingId;
+      }
+
+      return new DriverScreenBinding((RelativeLayout) rootView, btnComplete, btndriverSignOut,
+          cardStatus, cardView, map, tvEta, tvStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,7 +49,7 @@ import okhttp3.Response;
 public class DriverMapActivity extends AppCompatActivity {
 
     private MapView map;
-    private TextView tvEta;
+    private TextView tvEta, tvStatus;
     private Button btnComplete, btndriverSignOut;
     private String DocumentId;
     private AccidentReport assignedReport;
@@ -57,8 +58,8 @@ public class DriverMapActivity extends AppCompatActivity {
     private Polyline roadOverlay;
     private GeoPoint currentLocation;
     private GeoPoint accidentLocation;
+    private GeoPoint hospitalLocation;
 
-    // GraphHopper
     private static final String GH_API_KEY = "8c9870a4-4437-4685-9517-24cd9f46fdb8";
     private static final String GH_BASE_URL = "https://graphhopper.com/api/1/route";
 
@@ -67,33 +68,54 @@ public class DriverMapActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION
     };
 
-    // For tracking location changes
     private boolean isFirstLocationUpdate = true;
     private Handler routeUpdateHandler = new Handler(Looper.getMainLooper());
-    private static final long ROUTE_UPDATE_INTERVAL = 30000; // 30 seconds
-    private static final float MIN_DISTANCE_FOR_UPDATE = 50f; // 50 meters
+    private static final long ROUTE_UPDATE_INTERVAL = 30000;
+    private static final float MIN_DISTANCE_FOR_UPDATE = 50f;
     private GeoPoint lastRouteUpdateLocation;
+    private String currentDriverId, DriverId;
 
     private boolean isRouteBeingCalculated = false;
+
+    // Journey states
+    private enum JourneyState {
+        TO_ACCIDENT,
+        AT_ACCIDENT,
+        TO_HOSPITAL,
+        COMPLETED
+    }
+
+    private JourneyState currentState = JourneyState.TO_ACCIDENT;
+    private static final float ARRIVAL_THRESHOLD = 100f; // 100 meters
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Context ctx = getApplicationContext();
-        Configuration.getInstance().load(
-                ctx,
-                PreferenceManager.getDefaultSharedPreferences(ctx)
-        );
+        Configuration.getInstance().load(getApplicationContext(),
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+        Configuration.getInstance().setUserAgentValue(getPackageName());
 
         setContentView(R.layout.driver_screen);
 
         tvEta = findViewById(R.id.tvEta);
+        tvStatus = findViewById(R.id.tvStatus);
         btnComplete = findViewById(R.id.btnComplete);
         btndriverSignOut = findViewById(R.id.btndriverSignOut);
         map = findViewById(R.id.map);
 
-        // Check for null views
+        currentDriverId = "Driver-" + FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Drivers")
+                .document(currentDriverId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        DriverId = doc.getString("Driver_ID");
+                        findAndDisplayAssignedReport();
+                    }
+                });
+
         if (map == null || tvEta == null || btnComplete == null) {
             Toast.makeText(this, "Error: UI components not found", Toast.LENGTH_LONG).show();
             finish();
@@ -102,13 +124,25 @@ public class DriverMapActivity extends AppCompatActivity {
 
         requestPermissionsIfNecessary(REQUIRED_PERMISSIONS);
 
-        findAndDisplayAssignedReport();
-
-        btnComplete.setOnClickListener(v -> markReportCompleted());
+        btnComplete.setOnClickListener(v -> handleActionButton());
         btnComplete.setEnabled(false);
 
         if (btndriverSignOut != null) {
             btndriverSignOut.setOnClickListener(v -> signOut());
+        }
+    }
+
+    private void handleActionButton() {
+        switch (currentState) {
+            case AT_ACCIDENT:
+                markAccidentReached();
+                break;
+            case TO_HOSPITAL:
+                Toast.makeText(this, "Please reach the hospital to complete", Toast.LENGTH_SHORT).show();
+                break;
+            case COMPLETED:
+                markReportCompleted();
+                break;
         }
     }
 
@@ -118,41 +152,66 @@ public class DriverMapActivity extends AppCompatActivity {
 
         db.collection("Accidents")
                 .whereEqualTo("status", "Acknowledged")
+                .whereEqualTo("driverId", DriverId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
-
-                        DocumentSnapshot document = task.getResult()
-                                .getDocuments()
-                                .get(0);
-
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
                         assignedReport = document.toObject(AccidentReport.class);
                         DocumentId = document.getId();
 
                         if (assignedReport != null) {
                             tvEta.setText("Accident Location Found! Plotting route...");
-                            btnComplete.setEnabled(true);
+                            btnComplete.setText("Mark Reached");
+                            btnComplete.setEnabled(false);
+                            currentState = JourneyState.TO_ACCIDENT;
+                            tvStatus.setText("Now heading to accident location...");
+
+                            fetchHospitalLocation(assignedReport.getAssignedHospitalId());
                             setupMapAndRoute();
                         } else {
                             tvEta.setText("Error loading accident data.");
                             btnComplete.setEnabled(false);
+                            setupLiveLocationOnly(); // Fallback to live location
                         }
                     } else {
-                        tvEta.setText("No assigned case to you.");
-                        Toast.makeText(this,
-                                "No assigned Case.",
-                                Toast.LENGTH_LONG).show();
+                        // NO CASE ASSIGNED - Show only live location
+                        tvEta.setText("No assigned case.");
+                        tvStatus.setText("Available - Live tracking active");
+                        Toast.makeText(this, "No assigned case. Live location active.", Toast.LENGTH_LONG).show();
                         btnComplete.setEnabled(false);
+                        btnComplete.setText("No Active Case");
+
+                        setupLiveLocationOnly();
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if (tvEta != null) {
-                        tvEta.setText("Error loading data.");
-                    }
-                    Toast.makeText(this,
-                            "Error fetching data: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show();
+                    tvEta.setText("Error loading data.");
+                    Toast.makeText(this, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    setupLiveLocationOnly(); // Fallback to live location on error
                 });
+    }
+
+    private void fetchHospitalLocation(String hospitalId) {
+        if (hospitalId == null || hospitalId.isEmpty()) return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Hospitals")
+                .document(hospitalId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        Double lat = doc.getDouble("latitude");
+                        Double lon = doc.getDouble("longitude");
+
+                        if (lat != null && lon != null) {
+                            hospitalLocation = new GeoPoint(lat, lon);
+                        }
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error fetching hospital location", Toast.LENGTH_SHORT).show()
+                );
     }
 
     private void setupMapAndRoute() {
@@ -172,12 +231,12 @@ public class DriverMapActivity extends AppCompatActivity {
             );
             ctl.setCenter(accidentLocation);
 
-            Marker m = new Marker(map);
-            m.setPosition(accidentLocation);
-            m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            m.setTitle("Accident: " + assignedReport.getDescription()
+            Marker accidentMarker = new Marker(map);
+            accidentMarker.setPosition(accidentLocation);
+            accidentMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            accidentMarker.setTitle("Accident: " + assignedReport.getDescription()
                     + "\n\n" + assignedReport.getAddress());
-            map.getOverlays().add(m);
+            map.getOverlays().add(accidentMarker);
 
             setupLocationTracking();
 
@@ -188,11 +247,31 @@ public class DriverMapActivity extends AppCompatActivity {
         }
     }
 
+    private void setupLiveLocationOnly() {
+        try {
+            map.setTileSource(TileSourceFactory.MAPNIK);
+            map.setBuiltInZoomControls(true);
+            map.setMultiTouchControls(true);
+
+            IMapController ctl = map.getController();
+            ctl.setZoom(15.0);
+
+            // Clear any existing overlays
+            map.getOverlays().clear();
+
+            setupLocationTrackingNoRoute();
+
+            map.invalidate();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error setting up live location: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
     private void setupLocationTracking() {
         try {
             GpsMyLocationProvider gpsProvider = new GpsMyLocationProvider(this);
-            gpsProvider.setLocationUpdateMinTime(2000); // 2 seconds
-            gpsProvider.setLocationUpdateMinDistance(5); // 5 meters
+            gpsProvider.setLocationUpdateMinTime(2000);
+            gpsProvider.setLocationUpdateMinDistance(5);
 
             myLocationOverlay = new MyLocationNewOverlay(gpsProvider, map);
             myLocationOverlay.enableMyLocation();
@@ -205,7 +284,6 @@ public class DriverMapActivity extends AppCompatActivity {
             Bitmap resizedIcon = Bitmap.createScaledBitmap(original, iconWidth, iconHeight, true);
             myLocationOverlay.setDirectionIcon(resizedIcon);
 
-            // Add custom location listener
             myLocationOverlay.runOnFirstFix(() -> {
                 Location location = myLocationOverlay.getLastFix();
                 if (location != null) {
@@ -215,12 +293,42 @@ public class DriverMapActivity extends AppCompatActivity {
 
             map.getOverlays().add(myLocationOverlay);
 
-            // Start periodic location checks
             startLocationUpdateTimer();
 
         } catch (Exception e) {
             Toast.makeText(this, "Error setting up location: " + e.getMessage(),
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setupLocationTrackingNoRoute() {
+        try {
+            GpsMyLocationProvider gpsProvider = new GpsMyLocationProvider(this);
+            gpsProvider.setLocationUpdateMinTime(2000);
+            gpsProvider.setLocationUpdateMinDistance(5);
+
+            myLocationOverlay = new MyLocationNewOverlay(gpsProvider, map);
+            myLocationOverlay.enableMyLocation();
+            myLocationOverlay.enableFollowLocation();
+
+            Bitmap original = BitmapFactory.decodeResource(getResources(), R.drawable.ambulance);
+            int iconWidth = 70;
+            int iconHeight = 70;
+            Bitmap resizedIcon = Bitmap.createScaledBitmap(original, iconWidth, iconHeight, true);
+            myLocationOverlay.setDirectionIcon(resizedIcon);
+
+            myLocationOverlay.runOnFirstFix(() -> {
+                Location location = myLocationOverlay.getLastFix();
+                if (location != null) {
+                    runOnUiThread(() -> onLiveLocationUpdate(location));
+                }
+            });
+
+            map.getOverlays().add(myLocationOverlay);
+            startLiveLocationTimer();
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Error setting up location tracking: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -234,37 +342,150 @@ public class DriverMapActivity extends AppCompatActivity {
                         onLocationUpdate(location);
                     }
                 }
-                routeUpdateHandler.postDelayed(this, 5000); // Check every 5 seconds
+                routeUpdateHandler.postDelayed(this, 5000);
             }
         }, 5000);
     }
 
-    private void onLocationUpdate(Location location) {
-        if (location == null || accidentLocation == null || isRouteBeingCalculated) return;
+    private void startLiveLocationTimer() {
+        routeUpdateHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (myLocationOverlay != null) {
+                    Location location = myLocationOverlay.getLastFix();
+                    if (location != null) {
+                        onLiveLocationUpdate(location);
+                    }
+                }
+                routeUpdateHandler.postDelayed(this, 5000);
+            }
+        }, 5000);
+    }
+
+    private void onLiveLocationUpdate(Location location) {
+        if (location == null) return;
 
         currentLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
 
-        // First location update - get initial route
+        updateDriverLocationInFirestore(currentLocation);
+
+            tvStatus.setText("Live Location Active");
+    }
+
+    private void onLocationUpdate(Location location) {
+        if (location == null || isRouteBeingCalculated) return;
+
+        if (assignedReport == null) {
+            onLiveLocationUpdate(location);
+            return;
+        }
+
+        currentLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+
+        updateDriverLocationInFirestore(currentLocation);
+
+        switch (currentState) {
+            case TO_ACCIDENT:
+                if (accidentLocation != null) {
+                    float distanceToAccident = (float) currentLocation.distanceToAsDouble(accidentLocation);
+
+                    if (distanceToAccident <= ARRIVAL_THRESHOLD) {
+                        currentState = JourneyState.AT_ACCIDENT;
+                        btnComplete.setEnabled(true);
+                        btnComplete.setText("Mark Reached");
+                        tvStatus.setText("You have arrived at the accident location!");
+                        Toast.makeText(this, "Arrived at accident location!", Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+
+            case TO_HOSPITAL:
+                if (hospitalLocation != null) {
+                    float distanceToHospital = (float) currentLocation.distanceToAsDouble(hospitalLocation);
+
+                    if (distanceToHospital <= ARRIVAL_THRESHOLD) {
+                        currentState = JourneyState.COMPLETED;
+                        btnComplete.setEnabled(true);
+                        btnComplete.setText("Mark Complete");
+                        tvStatus.setText("Arrived at hospital! Click to complete case.");
+                        Toast.makeText(this, "Arrived at hospital!", Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+        }
+
         if (isFirstLocationUpdate) {
             isFirstLocationUpdate = false;
             lastRouteUpdateLocation = currentLocation;
 
-            ArrayList<GeoPoint> points = new ArrayList<>();
-            points.add(currentLocation);
-            points.add(accidentLocation);
-            BoundingBox box = BoundingBox.fromGeoPoints(points);
-            map.zoomToBoundingBox(box, true);
+            GeoPoint destination = (currentState == JourneyState.TO_HOSPITAL) ? hospitalLocation : accidentLocation;
 
-            tvEta.setText("Calculating route from your location...");
-            calculateRoute(currentLocation, accidentLocation);
+            if (destination != null) {
+                ArrayList<GeoPoint> points = new ArrayList<>();
+                points.add(currentLocation);
+                points.add(destination);
+                BoundingBox box = BoundingBox.fromGeoPoints(points);
+                map.zoomToBoundingBox(box, true);
+
+                tvEta.setText("Calculating route from your location...");
+                calculateRoute(currentLocation, destination);
+            }
         } else {
-            // Update route if moved significantly
             if (shouldUpdateRoute(currentLocation)) {
                 lastRouteUpdateLocation = currentLocation;
-                tvEta.setText("Recalculating route...");
-                calculateRoute(currentLocation, accidentLocation);
+                GeoPoint destination = (currentState == JourneyState.TO_HOSPITAL) ? hospitalLocation : accidentLocation;
+
+                if (destination != null) {
+                    tvEta.setText("Recalculating route...");
+                    calculateRoute(currentLocation, destination);
+                }
             }
         }
+    }
+
+    private void markAccidentReached() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        if (assignedReport == null || DocumentId == null) {
+            Toast.makeText(this, "No assigned case.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        db.collection("Accidents")
+                .document(DocumentId)
+                .update("status", "Reached at Location")
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(this, "Marked as reached accident location!", Toast.LENGTH_SHORT).show();
+
+                    currentState = JourneyState.TO_HOSPITAL;
+                    btnComplete.setText("Mark Complete");
+                    btnComplete.setEnabled(false); // Will enable when close to hospital
+                    tvStatus.setText("Now heading to hospital...");
+
+                    map.getOverlays().clear();
+
+                    if (hospitalLocation != null) {
+                        Marker hospitalMarker = new Marker(map);
+                        hospitalMarker.setPosition(hospitalLocation);
+                        hospitalMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                        hospitalMarker.setTitle("Hospital Destination");
+                        map.getOverlays().add(hospitalMarker);
+
+                        map.getOverlays().add(myLocationOverlay);
+
+                        isFirstLocationUpdate = true;
+                        if (currentLocation != null) {
+                            calculateRoute(currentLocation, hospitalLocation);
+                        }
+
+                        map.invalidate();
+                    } else {
+                        Toast.makeText(this, "Hospital location not available", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error updating status: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show());
     }
 
     private boolean shouldUpdateRoute(GeoPoint newLocation) {
@@ -283,7 +504,6 @@ public class DriverMapActivity extends AppCompatActivity {
         }).start();
     }
 
-    // ---------------- GRAPHHOPPER ROUTING ----------------
     private void fetchGraphHopperRoute(GeoPoint start, GeoPoint end) {
         if (start == null || end == null) {
             showStraightLineFallback(end, start);
@@ -371,10 +591,12 @@ public class DriverMapActivity extends AppCompatActivity {
                 map.getOverlays().add(roadOverlay);
                 map.invalidate();
 
+                String destination = (currentState == JourneyState.TO_HOSPITAL) ? "hospital" : "accident";
+
                 if (minutes >= 0 && distanceKm >= 0) {
-                    tvEta.setText(String.format("ETA: ~%d mins (%.1f km)", minutes, distanceKm));
+                    tvEta.setText(String.format("ETA to %s: ~%d mins (%.1f km)", destination, minutes, distanceKm));
                 } else if (minutes >= 0) {
-                    tvEta.setText("ETA: ~" + minutes + " mins");
+                    tvEta.setText("ETA to " + destination + ": ~" + minutes + " mins");
                 } else {
                     tvEta.setText("ETA: available");
                 }
@@ -424,7 +646,6 @@ public class DriverMapActivity extends AppCompatActivity {
         });
     }
 
-    // ---------------- COMPLETE BUTTON ----------------
     private void markReportCompleted() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -439,17 +660,37 @@ public class DriverMapActivity extends AppCompatActivity {
                 .document(DocumentId)
                 .update("status", "Completed")
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(this,
-                            "Report marked COMPLETED.",
-                            Toast.LENGTH_SHORT).show();
-                    // Reset for next assignment
-                    isFirstLocationUpdate = true;
-                    lastRouteUpdateLocation = null;
-                    assignedReport = null;
-                    DocumentId = null;
-                    map.getOverlays().clear();
+                    db.collection("Drivers")
+                            .whereEqualTo("Driver_ID", currentDriverId)
+                            .get()
+                            .addOnSuccessListener(querySnapshot -> {
+                                if (!querySnapshot.isEmpty()) {
+                                    String driverDocId = querySnapshot.getDocuments().get(0).getId();
+                                    db.collection("Drivers")
+                                            .document(driverDocId)
+                                            .update("status", "Available")
+                                            .addOnSuccessListener(u -> {
+                                                Toast.makeText(this,
+                                                        "Case completed! You are now available for new cases.",
+                                                        Toast.LENGTH_LONG).show();
 
-                    findAndDisplayAssignedReport();
+                                                isFirstLocationUpdate = true;
+                                                lastRouteUpdateLocation = null;
+                                                assignedReport = null;
+                                                DocumentId = null;
+                                                roadOverlay = null;
+                                                currentState = JourneyState.TO_ACCIDENT;
+                                                hospitalLocation = null;
+
+                                                map.getOverlays().clear();
+                                                map.getOverlays().add(myLocationOverlay);
+                                                map.invalidate();
+                                                btnComplete.setEnabled(false);
+
+                                                findAndDisplayAssignedReport();
+                                            });
+                                }
+                            });
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this,
@@ -457,7 +698,6 @@ public class DriverMapActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show());
     }
 
-    // ---------------- PERMISSION HANDLER ----------------
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> req = new ArrayList<>();
         for (String p : permissions) {
@@ -527,8 +767,44 @@ public class DriverMapActivity extends AppCompatActivity {
     }
 
     private void signOut() {
-        FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(this, MainActivity.class));
-        finish();
+        try {
+            SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear();
+            editor.apply();
+
+            FirebaseAuth.getInstance().signOut();
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Drivers")
+                    .whereEqualTo("Driver_ID", DriverId)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        if (!querySnapshot.isEmpty()) {
+                            String driverDocId = querySnapshot.getDocuments().get(0).getId();
+                            db.collection("Drivers")
+                                    .document(driverDocId)
+                                    .update("status", "Unavailable");
+                        }
+                    });
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error signing out: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateDriverLocationInFirestore(GeoPoint location) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("Drivers")
+                .document(currentDriverId)
+                .update(
+                        "latitude", location.getLatitude(),
+                        "longitude", location.getLongitude()
+                );
     }
 }

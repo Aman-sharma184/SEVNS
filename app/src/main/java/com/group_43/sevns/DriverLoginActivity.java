@@ -38,7 +38,6 @@ public class DriverLoginActivity extends AppCompatActivity {
             return;
         }
 
-        // 1. Sign in with Firebase Authentication
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -63,7 +62,15 @@ public class DriverLoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(document -> {
 
                     if (document.exists()) {
-                        Toast.makeText(this, "Driver Login Successful", Toast.LENGTH_SHORT).show();
+                        db.collection("Drivers")
+                                .document(uid)
+                                .update("status", "Available")
+                                .addOnSuccessListener(unused -> {
+                                    Toast.makeText(this,
+                                            "Driver Login Successful",
+                                            Toast.LENGTH_SHORT).show();
+                                });
+                        MainActivity.saveLoginData(this, "driver", uid);
                         startActivity(new Intent(DriverLoginActivity.this, DriverMapActivity.class));
                         finish();
 

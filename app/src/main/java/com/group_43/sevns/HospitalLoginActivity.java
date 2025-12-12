@@ -31,7 +31,6 @@ public class HospitalLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hospital_login);
 
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
         editEmail = findViewById(R.id.email);
@@ -52,14 +51,12 @@ public class HospitalLoginActivity extends AppCompatActivity {
             return;
         }
 
-        // 1. Sign in with Firebase Authentication
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         String uid = "Hospital-" + FirebaseAuth.getInstance().getCurrentUser().getUid();
                         checkHospitalInFirestore(uid);
                     } else {
-                        // If sign in fails, display a message to the user.
                         Toast.makeText(HospitalLoginActivity.this, "Authentication failed.",
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -79,6 +76,7 @@ public class HospitalLoginActivity extends AppCompatActivity {
                         String storedUid = document.getString("uid");
 
                         if (storedUid != null && storedUid.startsWith("Hospital-")) {
+                            MainActivity.saveLoginData(this, "hospital", uid);
 
                             Toast.makeText(this, "Hospital Login Successful", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(HospitalLoginActivity.this, HospitalDashboardActivity.class));

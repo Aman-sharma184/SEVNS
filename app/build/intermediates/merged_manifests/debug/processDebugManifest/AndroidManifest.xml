@@ -57,13 +57,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:testOnly="true"
-        android:theme="@style/Theme.Material3.DayNight.NoActionBar" >
+        android:theme="@style/Theme.Material3.DayNight.NoActionBar"
+        android:usesCleartextTraffic="true" >
         <activity android:name="com.group_43.sevns.DriverRegister" />
         <activity android:name="com.group_43.sevns.DriverMapActivity" />
         <activity android:name="com.group_43.sevns.DriverLoginActivity" />
         <activity android:name="com.group_43.sevns.HospitalDashboardActivity" />
         <activity android:name="com.group_43.sevns.HospitalLoginActivity" />
-        <activity android:name="com.group_43.sevns.AccidentStatusActivity" />
+        <activity android:name="com.group_43.sevns.TrackCaseActivity" />
         <activity android:name="com.group_43.sevns.AccidentReportingActivity" />
         <activity android:name="com.group_43.sevns.HospitalRegisterActivity" />
         <activity
