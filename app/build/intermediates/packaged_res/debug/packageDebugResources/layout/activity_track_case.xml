@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="12dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
@@ -27,33 +27,40 @@
 
     <EditText
         android:id="@+id/edtCaseId"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_width="332dp"
+        android:layout_height="51dp"
+        android:layout_gravity="center"
+        android:background="@drawable/border_rounded"
         android:hint="Enter Case Number" />
 
     <Button
         android:id="@+id/btnTrack"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="Track Case"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/tvStatus"
-        android:textSize="16sp"
-        android:text="Status: "
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Status: "
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/tvEta"
-        android:textSize="16sp"
-        android:text="ETA:"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="ETA:"
+        android:textSize="16sp" />
 
     <org.osmdroid.views.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:background="@drawable/border_rounded" />
 </LinearLayout>

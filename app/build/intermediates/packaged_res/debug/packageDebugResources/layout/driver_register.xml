@@ -11,17 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="8dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#5E35B1"
-            app:title="Driver Registration"
-            app:titleTextColor="#FFFFFF"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:elevation="8dp"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

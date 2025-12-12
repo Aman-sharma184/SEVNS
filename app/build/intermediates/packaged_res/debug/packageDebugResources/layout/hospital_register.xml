@@ -11,17 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="8dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#1976D2"
-            app:title="Hospital Registration"
-            app:titleTextColor="#FFFFFF"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:elevation="8dp"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -36,18 +26,19 @@
 
             <!-- Header Card -->
             <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:gravity="center"
+                    android:orientation="vertical"
                     android:padding="24dp">
 
                     <!-- Logo -->
@@ -56,17 +47,17 @@
                         android:layout_width="180dp"
                         android:layout_height="100dp"
                         android:layout_marginBottom="16dp"
-                        app:srcCompat="@drawable/logo"
+                        android:contentDescription="App Logo"
                         android:scaleType="fitCenter"
-                        android:contentDescription="App Logo"/>
+                        app:srcCompat="@drawable/logo" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Register your hospital for emergency services"
-                        android:textSize="14sp"
+                        android:textAlignment="center"
                         android:textColor="#757575"
-                        android:textAlignment="center"/>
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
@@ -92,8 +83,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:gravity="center_vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -117,7 +107,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="8dp"
                         android:hint="Enter hospital name"
                         app:boxStrokeColor="#1976D2"
                         app:hintTextColor="#1976D2">
@@ -127,7 +117,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPersonName"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -136,8 +126,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:gravity="center_vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -149,7 +138,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Email Address"
+                            android:text="Email"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:textColor="#424242"/>
@@ -161,7 +150,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="8dp"
                         android:hint="Enter official email"
                         app:boxStrokeColor="#1976D2"
                         app:hintTextColor="#1976D2">
@@ -171,7 +160,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textEmailAddress"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -180,8 +169,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:gravity="center_vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -205,7 +193,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="8dp"
                         android:hint="Create a secure password"
                         app:boxStrokeColor="#1976D2"
                         app:hintTextColor="#1976D2"
@@ -217,75 +205,30 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="textPassword"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Contact Information Card -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:cardBackgroundColor="#FFFFFF">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="24dp">
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="📍"
-                            android:textSize="24sp"
-                            android:layout_marginEnd="12dp"/>
+                            android:layout_marginEnd="8dp"
+                            android:text="🏥"
+                            android:textSize="20sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Contact and Location"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="#212121"/>
-
-                    </LinearLayout>
-
-                    <!-- Address -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🏠"
-                            android:textSize="20sp"
-                            android:layout_marginEnd="8dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Full Address"
+                            android:text="Address"
+                            android:textColor="#424242"
                             android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="#424242"/>
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -293,8 +236,8 @@
                         android:id="@+id/addressInputLayout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
-                        android:layout_height="55dp"
-                        android:layout_marginBottom="16dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:hint="Enter complete address"
                         app:boxStrokeColor="#1976D2"
                         app:hintTextColor="#1976D2">
@@ -309,28 +252,26 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Phone -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
                             android:text="📱"
-                            android:textSize="20sp"
-                            android:layout_marginEnd="8dp"/>
+                            android:textSize="20sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Contact Number"
+                            android:textColor="#424242"
                             android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="#424242"/>
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -339,7 +280,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="8dp"
                         android:hint="Enter phone number"
                         app:boxStrokeColor="#1976D2"
                         app:hintTextColor="#1976D2">
@@ -349,34 +290,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="phone"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Location Coordinates -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🌐"
-                            android:textSize="20sp"
-                            android:layout_marginEnd="8dp"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="GPS Coordinates"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="#424242"/>
-
-                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/locationInputLayout"
@@ -393,11 +309,11 @@
                             android:id="@+id/tvHospitalLocation"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Fetching coordinates..."
                             android:enabled="false"
+                            android:minLines="2"
+                            android:text="Fetching coordinates..."
                             android:textColor="#424242"
-                            android:textSize="16sp"
-                            android:minLines="2"/>
+                            android:textSize="16sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -405,7 +321,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Register Button Card -->
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

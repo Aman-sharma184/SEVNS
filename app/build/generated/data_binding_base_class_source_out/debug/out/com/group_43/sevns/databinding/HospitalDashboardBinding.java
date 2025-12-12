@@ -31,10 +31,16 @@ public final class HospitalDashboardBinding implements ViewBinding {
   public final TextView hospitalName;
 
   @NonNull
+  public final LinearLayout listHeader;
+
+  @NonNull
   public final ListView listReports;
 
   @NonNull
   public final TextView tvAssignedCases;
+
+  @NonNull
+  public final TextView tvAvailableDrivers;
 
   @NonNull
   public final TextView tvCaseCount;
@@ -43,22 +49,34 @@ public final class HospitalDashboardBinding implements ViewBinding {
   public final TextView tvDashboardTitle;
 
   @NonNull
+  public final TextView tvDriverCount;
+
+  @NonNull
   public final TextView tvNoReports;
+
+  @NonNull
+  public final TextView tvRefreshIndicator;
 
   private HospitalDashboardBinding(@NonNull LinearLayout rootView, @NonNull Button btnsignOut,
       @NonNull LinearLayout emptyStateContainer, @NonNull TextView hospitalName,
-      @NonNull ListView listReports, @NonNull TextView tvAssignedCases,
+      @NonNull LinearLayout listHeader, @NonNull ListView listReports,
+      @NonNull TextView tvAssignedCases, @NonNull TextView tvAvailableDrivers,
       @NonNull TextView tvCaseCount, @NonNull TextView tvDashboardTitle,
-      @NonNull TextView tvNoReports) {
+      @NonNull TextView tvDriverCount, @NonNull TextView tvNoReports,
+      @NonNull TextView tvRefreshIndicator) {
     this.rootView = rootView;
     this.btnsignOut = btnsignOut;
     this.emptyStateContainer = emptyStateContainer;
     this.hospitalName = hospitalName;
+    this.listHeader = listHeader;
     this.listReports = listReports;
     this.tvAssignedCases = tvAssignedCases;
+    this.tvAvailableDrivers = tvAvailableDrivers;
     this.tvCaseCount = tvCaseCount;
     this.tvDashboardTitle = tvDashboardTitle;
+    this.tvDriverCount = tvDriverCount;
     this.tvNoReports = tvNoReports;
+    this.tvRefreshIndicator = tvRefreshIndicator;
   }
 
   @Override
@@ -106,6 +124,12 @@ public final class HospitalDashboardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.listHeader;
+      LinearLayout listHeader = ViewBindings.findChildViewById(rootView, id);
+      if (listHeader == null) {
+        break missingId;
+      }
+
       id = R.id.listReports;
       ListView listReports = ViewBindings.findChildViewById(rootView, id);
       if (listReports == null) {
@@ -115,6 +139,12 @@ public final class HospitalDashboardBinding implements ViewBinding {
       id = R.id.tvAssignedCases;
       TextView tvAssignedCases = ViewBindings.findChildViewById(rootView, id);
       if (tvAssignedCases == null) {
+        break missingId;
+      }
+
+      id = R.id.tvAvailableDrivers;
+      TextView tvAvailableDrivers = ViewBindings.findChildViewById(rootView, id);
+      if (tvAvailableDrivers == null) {
         break missingId;
       }
 
@@ -130,14 +160,27 @@ public final class HospitalDashboardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tvDriverCount;
+      TextView tvDriverCount = ViewBindings.findChildViewById(rootView, id);
+      if (tvDriverCount == null) {
+        break missingId;
+      }
+
       id = R.id.tvNoReports;
       TextView tvNoReports = ViewBindings.findChildViewById(rootView, id);
       if (tvNoReports == null) {
         break missingId;
       }
 
+      id = R.id.tvRefreshIndicator;
+      TextView tvRefreshIndicator = ViewBindings.findChildViewById(rootView, id);
+      if (tvRefreshIndicator == null) {
+        break missingId;
+      }
+
       return new HospitalDashboardBinding((LinearLayout) rootView, btnsignOut, emptyStateContainer,
-          hospitalName, listReports, tvAssignedCases, tvCaseCount, tvDashboardTitle, tvNoReports);
+          hospitalName, listHeader, listReports, tvAssignedCases, tvAvailableDrivers, tvCaseCount,
+          tvDashboardTitle, tvDriverCount, tvNoReports, tvRefreshIndicator);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

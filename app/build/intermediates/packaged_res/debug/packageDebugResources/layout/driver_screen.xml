@@ -11,11 +11,32 @@
 
     <org.osmdroid.views.MapView
         android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="730dp"
+        android:layout_width="342dp"
+        android:layout_height="606dp"
         android:layout_above="@+id/cardView"
-        android:layout_marginBottom="-2dp"
-        android:clipToPadding="false" />
+        android:layout_below="@+id/cardStatus"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="1dp"
+        android:clipToPadding="false">
+
+    </org.osmdroid.views.MapView>
+
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/map"
+        android:layout_alignEnd="@+id/map"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_weight="1"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        android:text="Refresh" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardStatus"
@@ -23,32 +44,32 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:elevation="8dp"
+        app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="#FFFFFF">
+        app:cardElevation="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#E3F2FD"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:background="#E3F2FD">
+            android:padding="10dp">
 
             <!-- ETA Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:background="#FFFFFF"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:padding="12dp">
 
                 <TextView
-                    android:text="⏱️"
-                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"/>
+                    android:layout_marginEnd="12dp"
+                    android:text="⏱️"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/tvEta"
@@ -59,47 +80,51 @@
                     android:textColor="#1976D2"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
             </LinearLayout>
 
             <!-- Divider -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="#BBDEFB"
-                android:layout_marginVertical="8dp"/>
+                android:layout_marginVertical="8dp"
+                android:background="#BBDEFB" />
 
             <!-- Status Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:background="#FFF3E0"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:padding="12dp">
 
                 <TextView
-                    android:text="🚑"
-                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"/>
+                    android:layout_marginEnd="12dp"
+                    android:text="🚑"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/tvStatus"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:lineSpacingExtra="2dp"
                     android:text=""
-                    android:textSize="14sp"
                     android:textColor="#E65100"
-                    android:textStyle="bold"
-                    android:lineSpacingExtra="2dp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
     <!-- Bottom Action Container -->
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
@@ -114,32 +139,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <!-- Mark Complete Button -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardBackgroundColor="#2196F3"
-                app:cardCornerRadius="30dp"
-                app:cardElevation="4dp">
+            android:orientation="vertical">
 
                 <Button
                     android:id="@+id/btnComplete"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="?attr/selectableItemBackground"
+                    android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:stateListAnimator="@null"
                     android:text="Mark Reached"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
-            </androidx.cardview.widget.CardView>
 
-            <!-- Sign Out Button -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,7 +163,8 @@
                 <Button
                     android:id="@+id/btndriverSignOut"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
                     android:background="?attr/selectableItemBackground"
                     android:stateListAnimator="@null"
                     android:text="Sign Out"

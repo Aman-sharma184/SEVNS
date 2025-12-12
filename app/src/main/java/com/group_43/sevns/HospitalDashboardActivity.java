@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,22 +28,24 @@ public class HospitalDashboardActivity extends AppCompatActivity {
     private ListView listReports;
     private Button btnsignOut;
     private TextView tvNoReports;
-    private TextView tvCaseCount, hospitalname;
+    private TextView tvCaseCount, tvDriverCount, hospitalname;
     private LinearLayout emptyStateContainer;
     private List<AccidentReport> assignedReports;
     private ArrayAdapter<AccidentReport> adapter;
     private String currentHospitalId;
+    private ListenerRegistration driverListener;
+    private ListenerRegistration caseListener;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hospital_dashboard);
-
         listReports = findViewById(R.id.listReports);
         btnsignOut = findViewById(R.id.btnsignOut);
         tvNoReports = findViewById(R.id.tvNoReports);
         tvCaseCount = findViewById(R.id.tvCaseCount);
+        tvDriverCount = findViewById(R.id.tvDriverCount);
         hospitalname = findViewById(R.id.hospital_name);
         emptyStateContainer = findViewById(R.id.emptyStateContainer);
 
@@ -59,24 +62,22 @@ public class HospitalDashboardActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1,
                 assignedReports
         );
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Hospitals")
                 .document(currentHospitalId)
                 .get()
                 .addOnSuccessListener(hospitalDoc -> {
-                            String hospitalName = hospitalDoc.getString("name");
-                            hospitalname.setText(hospitalName);
-                        }
-                );
-
+                    String hospitalName = hospitalDoc.getString("name");
+                    hospitalname.setText(hospitalName);
+                });
 
         listReports.setAdapter(adapter);
 
         fetchAssignedReports();
+        fetchAvailableDriversCount();
 
         btnsignOut.setOnClickListener(v -> signOut());
-
         listReports.setOnItemClickListener((parent, view, position, id) -> {
             AccidentReport selectedReport = assignedReports.get(position);
             showReportActionsDialog(selectedReport);
@@ -85,6 +86,13 @@ public class HospitalDashboardActivity extends AppCompatActivity {
 
     private void signOut() {
         try {
+            if (driverListener != null) {
+                driverListener.remove();
+            }
+            if (caseListener != null) {
+                caseListener.remove();
+            }
+
             SharedPreferences prefs = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.clear();
@@ -105,11 +113,35 @@ public class HospitalDashboardActivity extends AppCompatActivity {
         }
     }
 
+    private void fetchAvailableDriversCount() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        driverListener = db.collection("Drivers")
+                .whereEqualTo("hospitalId", currentHospitalId)
+                .whereEqualTo("status", "Available")
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.e("HOSPITAL", "Error fetching drivers: " + error.getMessage());
+                        return;
+                    }
+
+                    int availableDriverCount = 0;
+                    if (value != null) {
+                        availableDriverCount = value.size();
+                    }
+
+                    if (tvDriverCount != null) {
+                        tvDriverCount.setText(String.valueOf(availableDriverCount));
+                    }
+
+                    Log.d("HOSPITAL", "Available drivers for " + currentHospitalId + ": " + availableDriverCount);
+                });
+    }
 
     private void fetchAssignedReports() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("Accidents")
+        caseListener = db.collection("Accidents")
                 .whereEqualTo("assignedHospitalId", currentHospitalId)
                 .addSnapshotListener((value, error) -> {
 
@@ -215,8 +247,8 @@ public class HospitalDashboardActivity extends AppCompatActivity {
     private void acceptCase(String caseId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Find an available driver
         db.collection("Drivers")
+                .whereEqualTo("hospitalId", currentHospitalId)
                 .whereEqualTo("status", "Available")
                 .limit(1)
                 .get()
@@ -225,8 +257,6 @@ public class HospitalDashboardActivity extends AppCompatActivity {
                         DocumentSnapshot driverDoc = driverSnap.getDocuments().get(0);
                         String driverDocId = driverDoc.getId();
                         String driverId = driverDoc.getString("Driver_ID");
-
-                        // Update accident info
                         db.collection("Accidents")
                                 .document(caseId)
                                 .update(
@@ -253,7 +283,7 @@ public class HospitalDashboardActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show());
 
                     } else {
-                        Toast.makeText(this, "No available driver found!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No available driver found for this hospital!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e ->
@@ -285,5 +315,14 @@ public class HospitalDashboardActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show());
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (driverListener != null) {
+            driverListener.remove();
+        }
+        if (caseListener != null) {
+            caseListener.remove();
+        }
+    }
 }

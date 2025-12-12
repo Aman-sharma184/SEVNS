@@ -50,7 +50,7 @@ public class DriverMapActivity extends AppCompatActivity {
 
     private MapView map;
     private TextView tvEta, tvStatus;
-    private Button btnComplete, btndriverSignOut;
+    private Button btnComplete, btndriverSignOut, btnrefresh;
     private String DocumentId;
     private AccidentReport assignedReport;
 
@@ -102,7 +102,12 @@ public class DriverMapActivity extends AppCompatActivity {
         tvStatus = findViewById(R.id.tvStatus);
         btnComplete = findViewById(R.id.btnComplete);
         btndriverSignOut = findViewById(R.id.btndriverSignOut);
+        btnrefresh = findViewById(R.id.refresh);
         map = findViewById(R.id.map);
+
+        btnrefresh.setOnClickListener(v -> {
+                    findAndDisplayAssignedReport();
+                });
 
         currentDriverId = "Driver-" + FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -149,9 +154,10 @@ public class DriverMapActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void findAndDisplayAssignedReport() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        map.getOverlays().clear();
 
         db.collection("Accidents")
-                .whereEqualTo("status", "Acknowledged")
+                .whereEqualTo("completed", false)
                 .whereEqualTo("driverId", DriverId)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -172,23 +178,21 @@ public class DriverMapActivity extends AppCompatActivity {
                         } else {
                             tvEta.setText("Error loading accident data.");
                             btnComplete.setEnabled(false);
-                            setupLiveLocationOnly(); // Fallback to live location
+                            setupLiveLocationOnly();
                         }
                     } else {
-                        // NO CASE ASSIGNED - Show only live location
                         tvEta.setText("No assigned case.");
                         tvStatus.setText("Available - Live tracking active");
                         Toast.makeText(this, "No assigned case. Live location active.", Toast.LENGTH_LONG).show();
                         btnComplete.setEnabled(false);
                         btnComplete.setText("No Active Case");
-
                         setupLiveLocationOnly();
                     }
                 })
                 .addOnFailureListener(e -> {
                     tvEta.setText("Error loading data.");
                     Toast.makeText(this, "Error fetching data: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    setupLiveLocationOnly(); // Fallback to live location on error
+                    setupLiveLocationOnly();
                 });
     }
 
@@ -256,7 +260,6 @@ public class DriverMapActivity extends AppCompatActivity {
             IMapController ctl = map.getController();
             ctl.setZoom(15.0);
 
-            // Clear any existing overlays
             map.getOverlays().clear();
 
             setupLocationTrackingNoRoute();
@@ -401,19 +404,23 @@ public class DriverMapActivity extends AppCompatActivity {
 
             case TO_HOSPITAL:
                 if (hospitalLocation != null) {
+
                     float distanceToHospital = (float) currentLocation.distanceToAsDouble(hospitalLocation);
 
                     if (distanceToHospital <= ARRIVAL_THRESHOLD) {
                         currentState = JourneyState.COMPLETED;
+                        accidentLocation = null;
                         btnComplete.setEnabled(true);
                         btnComplete.setText("Mark Complete");
+                        map.getOverlays().clear();
+                        map.invalidate();
+                        setupLiveLocationOnly();
                         tvStatus.setText("Arrived at hospital! Click to complete case.");
                         Toast.makeText(this, "Arrived at hospital!", Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
         }
-
         if (isFirstLocationUpdate) {
             isFirstLocationUpdate = false;
             lastRouteUpdateLocation = currentLocation;
@@ -459,7 +466,7 @@ public class DriverMapActivity extends AppCompatActivity {
 
                     currentState = JourneyState.TO_HOSPITAL;
                     btnComplete.setText("Mark Complete");
-                    btnComplete.setEnabled(false); // Will enable when close to hospital
+                    btnComplete.setEnabled(false);
                     tvStatus.setText("Now heading to hospital...");
 
                     map.getOverlays().clear();
@@ -469,6 +476,8 @@ public class DriverMapActivity extends AppCompatActivity {
                         hospitalMarker.setPosition(hospitalLocation);
                         hospitalMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                         hospitalMarker.setTitle("Hospital Destination");
+
+
                         map.getOverlays().add(hospitalMarker);
 
                         map.getOverlays().add(myLocationOverlay);
@@ -647,6 +656,8 @@ public class DriverMapActivity extends AppCompatActivity {
     }
 
     private void markReportCompleted() {
+
+        findAndDisplayAssignedReport();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         if (assignedReport == null || DocumentId == null) {
@@ -658,7 +669,8 @@ public class DriverMapActivity extends AppCompatActivity {
 
         db.collection("Accidents")
                 .document(DocumentId)
-                .update("status", "Completed")
+                .update("status", "Completed",
+                        "completed", true)
                 .addOnSuccessListener(unused -> {
                     db.collection("Drivers")
                             .whereEqualTo("Driver_ID", currentDriverId)
@@ -681,13 +693,10 @@ public class DriverMapActivity extends AppCompatActivity {
                                                 roadOverlay = null;
                                                 currentState = JourneyState.TO_ACCIDENT;
                                                 hospitalLocation = null;
-
                                                 map.getOverlays().clear();
                                                 map.getOverlays().add(myLocationOverlay);
                                                 map.invalidate();
                                                 btnComplete.setEnabled(false);
-
-                                                findAndDisplayAssignedReport();
                                             });
                                 }
                             });

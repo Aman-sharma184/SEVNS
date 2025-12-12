@@ -13,6 +13,7 @@ public class AccidentReport {
     private String assignedHospitalId, driverId;
     private long timestamp;
     private String status;
+    private boolean completed;
     private String responseMessage;
     private List<String> declinedHospitals;
 
@@ -22,7 +23,7 @@ public class AccidentReport {
 
     public AccidentReport(String id, double latitude, double longitude, String phoneNumber,
                           String description, String address, String assignedHospitalId, String driverId,
-                          long timestamp, String status, String responseMessage) {
+                          long timestamp, String status,boolean completed, String responseMessage) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -33,6 +34,7 @@ public class AccidentReport {
         this.driverId = driverId;
         this.timestamp = timestamp;
         this.status = status;
+        this.completed = completed;
         this.responseMessage = responseMessage;
         this.declinedHospitals = new ArrayList<>();
     }
@@ -48,6 +50,8 @@ public class AccidentReport {
     public String getdriverId() { return driverId; }
     public long getTimestamp() { return timestamp; }
     public String getStatus() { return status; }
+    public boolean isCompleted() { return completed; }
+
 
     // Setters
     public void setId(String id) { this.id = id; }

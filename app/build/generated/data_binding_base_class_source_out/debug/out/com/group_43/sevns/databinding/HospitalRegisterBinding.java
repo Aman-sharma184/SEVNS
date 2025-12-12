@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -63,9 +62,6 @@ public final class HospitalRegisterBinding implements ViewBinding {
   public final TextInputLayout phoneInputLayout;
 
   @NonNull
-  public final MaterialToolbar toolbar;
-
-  @NonNull
   public final TextInputEditText tvHospitalLocation;
 
   private HospitalRegisterBinding(@NonNull CoordinatorLayout rootView,
@@ -75,8 +71,7 @@ public final class HospitalRegisterBinding implements ViewBinding {
       @NonNull TextInputEditText editHospitalPhone, @NonNull TextInputLayout emailInputLayout,
       @NonNull ImageView imageView7, @NonNull TextInputLayout locationInputLayout,
       @NonNull TextInputLayout nameInputLayout, @NonNull TextInputLayout passwordInputLayout,
-      @NonNull TextInputLayout phoneInputLayout, @NonNull MaterialToolbar toolbar,
-      @NonNull TextInputEditText tvHospitalLocation) {
+      @NonNull TextInputLayout phoneInputLayout, @NonNull TextInputEditText tvHospitalLocation) {
     this.rootView = rootView;
     this.addressInputLayout = addressInputLayout;
     this.btnRegisterHospital = btnRegisterHospital;
@@ -91,7 +86,6 @@ public final class HospitalRegisterBinding implements ViewBinding {
     this.nameInputLayout = nameInputLayout;
     this.passwordInputLayout = passwordInputLayout;
     this.phoneInputLayout = phoneInputLayout;
-    this.toolbar = toolbar;
     this.tvHospitalLocation = tvHospitalLocation;
   }
 
@@ -200,12 +194,6 @@ public final class HospitalRegisterBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.toolbar;
-      MaterialToolbar toolbar = ViewBindings.findChildViewById(rootView, id);
-      if (toolbar == null) {
-        break missingId;
-      }
-
       id = R.id.tvHospitalLocation;
       TextInputEditText tvHospitalLocation = ViewBindings.findChildViewById(rootView, id);
       if (tvHospitalLocation == null) {
@@ -215,7 +203,7 @@ public final class HospitalRegisterBinding implements ViewBinding {
       return new HospitalRegisterBinding((CoordinatorLayout) rootView, addressInputLayout,
           btnRegisterHospital, editHospitalAddress, editHospitalEmail, editHospitalName,
           editHospitalPassword, editHospitalPhone, emailInputLayout, imageView7,
-          locationInputLayout, nameInputLayout, passwordInputLayout, phoneInputLayout, toolbar,
+          locationInputLayout, nameInputLayout, passwordInputLayout, phoneInputLayout,
           tvHospitalLocation);
     }
     String missingId = rootView.getResources().getResourceName(id);

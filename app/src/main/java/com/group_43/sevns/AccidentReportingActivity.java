@@ -261,6 +261,7 @@ public class AccidentReportingActivity extends AppCompatActivity {
                     "",
                     System.currentTimeMillis(),
                     "searching",
+                    false,
                     ""
             );
 

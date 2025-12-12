@@ -28,7 +28,6 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -69,17 +68,21 @@ public class TrackCaseActivity extends AppCompatActivity {
         setupMap();
 
         btnTrack.setOnClickListener(v -> {
-            String case_id = edtCaseId.getText().toString();
-            loadCaseData(case_id);
+            String case_id = edtCaseId.getText().toString().trim();
+            if (!case_id.isEmpty()) {
+                loadCaseData(case_id);
+            } else {
+                Toast.makeText(this, "Please enter a Case ID", Toast.LENGTH_SHORT).show();
+            }
         });
 
         String case_id = getIntent().getStringExtra("CASE_ID");
 
-        if (case_id == null || case_id.trim().isEmpty()) {
-            case_id = "";
-            Toast.makeText(this, "Track your Case!", Toast.LENGTH_SHORT).show();
+        if (case_id != null && !case_id.trim().isEmpty()) {
             edtCaseId.setText(case_id);
             loadCaseData(case_id);
+        } else {
+            Toast.makeText(this, "Track your Case!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -89,6 +92,7 @@ public class TrackCaseActivity extends AppCompatActivity {
 
         IMapController controller = map.getController();
         controller.setZoom(15.0);
+        controller.setCenter(new GeoPoint(28.7041, 77.1025)); // Default to Delhi
     }
 
     private void loadCaseData(String case_id) {
@@ -102,20 +106,32 @@ public class TrackCaseActivity extends AppCompatActivity {
                         return;
                     }
 
-                    double accidentLat = doc.getDouble("latitude");
-                    double accidentLon = doc.getDouble("longitude");
+                    Double accidentLatObj = doc.getDouble("latitude");
+                    Double accidentLonObj = doc.getDouble("longitude");
                     String driverId = doc.getString("driverId");
                     String status = doc.getString("status");
 
-                    tvStatus.setText("Status: " + status);
+                    if (accidentLatObj == null || accidentLonObj == null) {
+                        Toast.makeText(this, "Invalid accident location data", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    double accidentLat = accidentLatObj;
+                    double accidentLon = accidentLonObj;
+
+                    tvStatus.setText("Status: " + (status != null ? status : "Unknown"));
 
                     GeoPoint accidentPoint = new GeoPoint(accidentLat, accidentLon);
                     showAccidentMarker(accidentPoint);
 
-                    loadDriverLocation(driverId, accidentPoint);
+                    if (driverId != null && !driverId.isEmpty()) {
+                        loadDriverLocation(driverId, accidentPoint);
+                    } else {
+                        Toast.makeText(this, "No driver assigned yet", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Error loading case: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void loadDriverLocation(String driverId, GeoPoint accidentPoint) {
@@ -132,8 +148,16 @@ public class TrackCaseActivity extends AppCompatActivity {
 
                     DocumentSnapshot doc = query.getDocuments().get(0);
 
-                    double driverLat = doc.getDouble("latitude");
-                    double driverLon = doc.getDouble("longitude");
+                    Double driverLatObj = doc.getDouble("latitude");
+                    Double driverLonObj = doc.getDouble("longitude");
+
+                    if (driverLatObj == null || driverLonObj == null) {
+                        Toast.makeText(this, "Invalid driver location data", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    double driverLat = driverLatObj;
+                    double driverLon = driverLonObj;
 
                     GeoPoint driverPoint = new GeoPoint(driverLat, driverLon);
                     showDriverMarker(driverPoint);
@@ -142,7 +166,7 @@ public class TrackCaseActivity extends AppCompatActivity {
 
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                        Toast.makeText(this, "Error loading driver: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void showAccidentMarker(GeoPoint point) {
@@ -170,11 +194,16 @@ public class TrackCaseActivity extends AppCompatActivity {
         driverMarker.setTitle("Ambulance Driver");
         driverMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ambulance);
-        Bitmap resized = Bitmap.createScaledBitmap(bmp, 70, 70, true);
-        Drawable icon = new BitmapDrawable(getResources(), resized);
-
-        driverMarker.setIcon(icon);
+        try {
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ambulance);
+            if (bmp != null) {
+                Bitmap resized = Bitmap.createScaledBitmap(bmp, 70, 70, true);
+                Drawable icon = new BitmapDrawable(getResources(), resized);
+                driverMarker.setIcon(icon);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (!map.getOverlays().contains(driverMarker))
             map.getOverlays().add(driverMarker);
@@ -198,6 +227,14 @@ public class TrackCaseActivity extends AppCompatActivity {
                 conn.setRequestMethod("GET");
                 conn.connect();
 
+                int responseCode = conn.getResponseCode();
+                if (responseCode != 200) {
+                    runOnUiThread(() ->
+                            Toast.makeText(this, "Routing API error: " + responseCode,
+                                    Toast.LENGTH_SHORT).show());
+                    return;
+                }
+
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(conn.getInputStream()));
 
@@ -213,7 +250,12 @@ public class TrackCaseActivity extends AppCompatActivity {
                 JSONObject json = new JSONObject(sb.toString());
                 JSONArray paths = json.getJSONArray("paths");
 
-                if (paths.length() == 0) return;
+                if (paths.length() == 0) {
+                    runOnUiThread(() ->
+                            Toast.makeText(this, "No route found",
+                                    Toast.LENGTH_SHORT).show());
+                    return;
+                }
 
                 JSONObject path = paths.getJSONObject(0);
                 long timeMs = path.getLong("time");
@@ -254,5 +296,21 @@ public class TrackCaseActivity extends AppCompatActivity {
 
         map.getOverlays().add(routeLine);
         map.invalidate();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (map != null) {
+            map.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (map != null) {
+            map.onPause();
+        }
     }
 }

@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -53,16 +52,12 @@ public final class DriverRegisterBinding implements ViewBinding {
   @NonNull
   public final TextInputLayout phoneInputLayout;
 
-  @NonNull
-  public final MaterialToolbar toolbar;
-
   private DriverRegisterBinding(@NonNull CoordinatorLayout rootView,
       @NonNull MaterialButton btnRegisterDriver, @NonNull TextInputEditText editDriverEmail,
       @NonNull TextInputEditText editDriverName, @NonNull TextInputEditText editDriverPassword,
       @NonNull TextInputEditText editDriverPhone, @NonNull TextInputLayout emailInputLayout,
       @NonNull ImageView imageView7, @NonNull TextInputLayout nameInputLayout,
-      @NonNull TextInputLayout passwordInputLayout, @NonNull TextInputLayout phoneInputLayout,
-      @NonNull MaterialToolbar toolbar) {
+      @NonNull TextInputLayout passwordInputLayout, @NonNull TextInputLayout phoneInputLayout) {
     this.rootView = rootView;
     this.btnRegisterDriver = btnRegisterDriver;
     this.editDriverEmail = editDriverEmail;
@@ -74,7 +69,6 @@ public final class DriverRegisterBinding implements ViewBinding {
     this.nameInputLayout = nameInputLayout;
     this.passwordInputLayout = passwordInputLayout;
     this.phoneInputLayout = phoneInputLayout;
-    this.toolbar = toolbar;
   }
 
   @Override
@@ -164,15 +158,9 @@ public final class DriverRegisterBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.toolbar;
-      MaterialToolbar toolbar = ViewBindings.findChildViewById(rootView, id);
-      if (toolbar == null) {
-        break missingId;
-      }
-
       return new DriverRegisterBinding((CoordinatorLayout) rootView, btnRegisterDriver,
           editDriverEmail, editDriverName, editDriverPassword, editDriverPhone, emailInputLayout,
-          imageView7, nameInputLayout, passwordInputLayout, phoneInputLayout, toolbar);
+          imageView7, nameInputLayout, passwordInputLayout, phoneInputLayout);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

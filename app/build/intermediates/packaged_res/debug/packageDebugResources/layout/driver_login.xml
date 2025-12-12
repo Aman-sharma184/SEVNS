@@ -35,6 +35,7 @@
 
         <!-- Login Form Card -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/loginFormCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
@@ -130,6 +131,123 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#5E35B1"
+                        android:background="?attr/selectableItemBackground"
+                        android:stateListAnimator="@null"/>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Hospital Selection Card (Initially Hidden) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/hospitalSelectionCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:visibility="gone"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Header Text -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select Your Hospital"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#5E35B1"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Choose the hospital you'll be working with"
+                    android:textSize="14sp"
+                    android:textColor="#757575"
+                    android:gravity="center"
+                    android:layout_marginBottom="24dp"/>
+
+                <!-- Hospital Spinner -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:hint="Select Hospital"
+                    app:boxStrokeColor="#5E35B1"
+                    app:hintTextColor="#5E35B1">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/hospitalSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:textSize="16sp"
+                        android:textColor="#212121"
+                        android:padding="16dp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Loading Progress Bar -->
+                <ProgressBar
+                    android:id="@+id/hospitalLoadingProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone"
+                    android:indeterminateTint="#5E35B1"/>
+
+                <!-- Confirm Button -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="#4CAF50">
+
+                    <Button
+                        android:id="@+id/btnConfirmHospital"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Confirm Selection"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:background="?attr/selectableItemBackground"
+                        android:stateListAnimator="@null"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Cancel Button -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="#F44336"
+                    app:strokeWidth="2dp">
+
+                    <Button
+                        android:id="@+id/btnCancelHospital"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Cancel"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#F44336"
                         android:background="?attr/selectableItemBackground"
                         android:stateListAnimator="@null"/>
 

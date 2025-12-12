@@ -4,12 +4,12 @@
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\layout\\hospital_login.xml"
     },
     {
-        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\layout_driver_register.xml.flat",
-        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\layout\\driver_register.xml"
-    },
-    {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\layout_activity_track_case.xml.flat",
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\layout\\activity_track_case.xml"
+    },
+    {
+        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\layout_driver_register.xml.flat",
+        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\layout\\driver_register.xml"
     },
     {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
@@ -32,12 +32,12 @@
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\layout\\hospital_dashboard.xml"
     },
     {
-        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-hdpi\\ic_launcher.webp"
-    },
-    {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-xxhdpi\\ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-hdpi\\ic_launcher.webp"
     },
     {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-hdpi_ic_launcher_foreground.webp.flat",
@@ -72,12 +72,12 @@
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\xml\\backup_rules.xml"
     },
     {
-        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-mdpi_ic_launcher_foreground.webp.flat",
-        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-mdpi\\ic_launcher_foreground.webp"
-    },
-    {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-xhdpi_ic_launcher_foreground.webp.flat",
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-xhdpi\\ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-mdpi_ic_launcher_foreground.webp.flat",
+        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-mdpi\\ic_launcher_foreground.webp"
     },
     {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
@@ -96,16 +96,12 @@
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-xxxhdpi\\logo.webp"
     },
     {
-        "merged": "com.group_43.sevns.app-debug-52:/layout_hospital_dashboard.xml.flat",
-        "source": "com.group_43.sevns.app-main-54:/layout/hospital_dashboard.xml"
+        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-hdpi\\ic_launcher_round.webp"
     },
     {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-xxxhdpi\\ic_launcher.webp"
-    },
-    {
-        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-hdpi\\ic_launcher_round.webp"
     },
     {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-xxhdpi_logo.webp.flat",
@@ -120,12 +116,12 @@
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-hdpi\\logo.webp"
     },
     {
-        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-xhdpi\\ic_launcher.webp"
-    },
-    {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-xhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\mipmap-xhdpi\\ic_launcher.webp"
     },
     {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\mipmap-mdpi_logo.webp.flat",
@@ -166,6 +162,10 @@
     {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\xml_data_extraction_rules.xml.flat",
         "source": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-main-54:\\xml\\data_extraction_rules.xml"
+    },
+    {
+        "merged": "com.group_43.sevns.app-debug-52:/layout_driver_screen.xml.flat",
+        "source": "com.group_43.sevns.app-main-54:/layout/driver_screen.xml"
     },
     {
         "merged": "C:\\Users\\Aman\\.gradle\\daemon\\8.13\\com.group_43.sevns.app-debug-52:\\drawable_border_rounded.xml.flat",

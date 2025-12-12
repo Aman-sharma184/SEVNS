@@ -38,6 +38,9 @@ public final class DriverScreenBinding implements ViewBinding {
   public final MapView map;
 
   @NonNull
+  public final Button refresh;
+
+  @NonNull
   public final TextView tvEta;
 
   @NonNull
@@ -45,13 +48,15 @@ public final class DriverScreenBinding implements ViewBinding {
 
   private DriverScreenBinding(@NonNull RelativeLayout rootView, @NonNull Button btnComplete,
       @NonNull Button btndriverSignOut, @NonNull CardView cardStatus, @NonNull CardView cardView,
-      @NonNull MapView map, @NonNull TextView tvEta, @NonNull TextView tvStatus) {
+      @NonNull MapView map, @NonNull Button refresh, @NonNull TextView tvEta,
+      @NonNull TextView tvStatus) {
     this.rootView = rootView;
     this.btnComplete = btnComplete;
     this.btndriverSignOut = btndriverSignOut;
     this.cardStatus = cardStatus;
     this.cardView = cardView;
     this.map = map;
+    this.refresh = refresh;
     this.tvEta = tvEta;
     this.tvStatus = tvStatus;
   }
@@ -113,6 +118,12 @@ public final class DriverScreenBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.refresh;
+      Button refresh = ViewBindings.findChildViewById(rootView, id);
+      if (refresh == null) {
+        break missingId;
+      }
+
       id = R.id.tvEta;
       TextView tvEta = ViewBindings.findChildViewById(rootView, id);
       if (tvEta == null) {
@@ -126,7 +137,7 @@ public final class DriverScreenBinding implements ViewBinding {
       }
 
       return new DriverScreenBinding((RelativeLayout) rootView, btnComplete, btndriverSignOut,
-          cardStatus, cardView, map, tvEta, tvStatus);
+          cardStatus, cardView, map, refresh, tvEta, tvStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

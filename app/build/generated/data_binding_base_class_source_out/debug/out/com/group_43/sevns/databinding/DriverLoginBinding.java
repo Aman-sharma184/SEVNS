@@ -4,11 +4,14 @@ package com.group_43.sevns.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.google.android.material.textfield.TextInputEditText;
@@ -22,6 +25,12 @@ public final class DriverLoginBinding implements ViewBinding {
   private final ScrollView rootView;
 
   @NonNull
+  public final Button btnCancelHospital;
+
+  @NonNull
+  public final Button btnConfirmHospital;
+
+  @NonNull
   public final Button btnLogin;
 
   @NonNull
@@ -31,19 +40,40 @@ public final class DriverLoginBinding implements ViewBinding {
   public final TextInputEditText email;
 
   @NonNull
+  public final ProgressBar hospitalLoadingProgress;
+
+  @NonNull
+  public final CardView hospitalSelectionCard;
+
+  @NonNull
+  public final AutoCompleteTextView hospitalSpinner;
+
+  @NonNull
   public final ImageView imageView5;
+
+  @NonNull
+  public final CardView loginFormCard;
 
   @NonNull
   public final TextInputEditText password;
 
-  private DriverLoginBinding(@NonNull ScrollView rootView, @NonNull Button btnLogin,
-      @NonNull Button btnRegister, @NonNull TextInputEditText email, @NonNull ImageView imageView5,
+  private DriverLoginBinding(@NonNull ScrollView rootView, @NonNull Button btnCancelHospital,
+      @NonNull Button btnConfirmHospital, @NonNull Button btnLogin, @NonNull Button btnRegister,
+      @NonNull TextInputEditText email, @NonNull ProgressBar hospitalLoadingProgress,
+      @NonNull CardView hospitalSelectionCard, @NonNull AutoCompleteTextView hospitalSpinner,
+      @NonNull ImageView imageView5, @NonNull CardView loginFormCard,
       @NonNull TextInputEditText password) {
     this.rootView = rootView;
+    this.btnCancelHospital = btnCancelHospital;
+    this.btnConfirmHospital = btnConfirmHospital;
     this.btnLogin = btnLogin;
     this.btnRegister = btnRegister;
     this.email = email;
+    this.hospitalLoadingProgress = hospitalLoadingProgress;
+    this.hospitalSelectionCard = hospitalSelectionCard;
+    this.hospitalSpinner = hospitalSpinner;
     this.imageView5 = imageView5;
+    this.loginFormCard = loginFormCard;
     this.password = password;
   }
 
@@ -74,6 +104,18 @@ public final class DriverLoginBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnCancelHospital;
+      Button btnCancelHospital = ViewBindings.findChildViewById(rootView, id);
+      if (btnCancelHospital == null) {
+        break missingId;
+      }
+
+      id = R.id.btnConfirmHospital;
+      Button btnConfirmHospital = ViewBindings.findChildViewById(rootView, id);
+      if (btnConfirmHospital == null) {
+        break missingId;
+      }
+
       id = R.id.btnLogin;
       Button btnLogin = ViewBindings.findChildViewById(rootView, id);
       if (btnLogin == null) {
@@ -92,9 +134,33 @@ public final class DriverLoginBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.hospitalLoadingProgress;
+      ProgressBar hospitalLoadingProgress = ViewBindings.findChildViewById(rootView, id);
+      if (hospitalLoadingProgress == null) {
+        break missingId;
+      }
+
+      id = R.id.hospitalSelectionCard;
+      CardView hospitalSelectionCard = ViewBindings.findChildViewById(rootView, id);
+      if (hospitalSelectionCard == null) {
+        break missingId;
+      }
+
+      id = R.id.hospitalSpinner;
+      AutoCompleteTextView hospitalSpinner = ViewBindings.findChildViewById(rootView, id);
+      if (hospitalSpinner == null) {
+        break missingId;
+      }
+
       id = R.id.imageView5;
       ImageView imageView5 = ViewBindings.findChildViewById(rootView, id);
       if (imageView5 == null) {
+        break missingId;
+      }
+
+      id = R.id.loginFormCard;
+      CardView loginFormCard = ViewBindings.findChildViewById(rootView, id);
+      if (loginFormCard == null) {
         break missingId;
       }
 
@@ -104,8 +170,9 @@ public final class DriverLoginBinding implements ViewBinding {
         break missingId;
       }
 
-      return new DriverLoginBinding((ScrollView) rootView, btnLogin, btnRegister, email, imageView5,
-          password);
+      return new DriverLoginBinding((ScrollView) rootView, btnCancelHospital, btnConfirmHospital,
+          btnLogin, btnRegister, email, hospitalLoadingProgress, hospitalSelectionCard,
+          hospitalSpinner, imageView5, loginFormCard, password);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

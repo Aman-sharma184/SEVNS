@@ -12,7 +12,6 @@ import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -53,9 +52,6 @@ public final class AccidentReportingBinding implements ViewBinding {
   public final CardView statusCard;
 
   @NonNull
-  public final MaterialToolbar toolbar;
-
-  @NonNull
   public final TextView tvStatus;
 
   private AccidentReportingBinding(@NonNull CoordinatorLayout rootView,
@@ -63,7 +59,7 @@ public final class AccidentReportingBinding implements ViewBinding {
       @NonNull TextInputLayout descInputLayout, @NonNull TextInputEditText editDesc,
       @NonNull TextInputEditText editPhone, @NonNull ImageView imageView4,
       @NonNull TextInputLayout locationInputLayout, @NonNull TextInputLayout phoneInputLayout,
-      @NonNull CardView statusCard, @NonNull MaterialToolbar toolbar, @NonNull TextView tvStatus) {
+      @NonNull CardView statusCard, @NonNull TextView tvStatus) {
     this.rootView = rootView;
     this.addressTextView = addressTextView;
     this.btnReport = btnReport;
@@ -74,7 +70,6 @@ public final class AccidentReportingBinding implements ViewBinding {
     this.locationInputLayout = locationInputLayout;
     this.phoneInputLayout = phoneInputLayout;
     this.statusCard = statusCard;
-    this.toolbar = toolbar;
     this.tvStatus = tvStatus;
   }
 
@@ -159,12 +154,6 @@ public final class AccidentReportingBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.toolbar;
-      MaterialToolbar toolbar = ViewBindings.findChildViewById(rootView, id);
-      if (toolbar == null) {
-        break missingId;
-      }
-
       id = R.id.tvStatus;
       TextView tvStatus = ViewBindings.findChildViewById(rootView, id);
       if (tvStatus == null) {
@@ -173,7 +162,7 @@ public final class AccidentReportingBinding implements ViewBinding {
 
       return new AccidentReportingBinding((CoordinatorLayout) rootView, addressTextView, btnReport,
           descInputLayout, editDesc, editPhone, imageView4, locationInputLayout, phoneInputLayout,
-          statusCard, toolbar, tvStatus);
+          statusCard, tvStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

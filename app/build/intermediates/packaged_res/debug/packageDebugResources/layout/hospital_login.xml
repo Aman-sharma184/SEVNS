@@ -50,23 +50,6 @@
                 android:orientation="vertical"
                 android:padding="24dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sign In"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="#212121"
-                    android:layout_marginBottom="8dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Access your hospital dashboard"
-                    android:textSize="14sp"
-                    android:textColor="#757575"
-                    android:layout_marginBottom="24dp"/>
-
                 <!-- Email Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
