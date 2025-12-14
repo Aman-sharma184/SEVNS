@@ -3,9 +3,7 @@ package com.group_43.sevns;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -61,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             String userType = prefs.getString(KEY_USER_TYPE, "");
             Intent intent = null;
 
-            // Redirect based on user type
             switch (userType) {
                 case "hospital":
                     intent = new Intent(this, HospitalDashboardActivity.class);
@@ -91,13 +88,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.putString(KEY_USER_TYPE, userType);
         editor.putString(KEY_USER_ID, userId);
-        editor.apply();
-    }
-
-    public static void clearLoginData(AppCompatActivity activity) {
-        SharedPreferences prefs = activity.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.clear();
         editor.apply();
     }
 
