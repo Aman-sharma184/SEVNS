@@ -4,6 +4,7 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +13,10 @@ public class HospitalFinder {
 
     private static final int INITIAL_RADIUS_KM = 10;
     private static final int RADIUS_INCREMENT_KM = 5;
-    private static final int MAX_RADIUS_KM = 50;
+    private static final int MAX_RADIUS_KM = 1000;
 
     private final Activity activity;
+
     public HospitalFinder(Activity activity) {
         this.activity = activity;
     }
@@ -70,7 +72,7 @@ public class HospitalFinder {
 
                         activity.runOnUiThread(() -> {
                             Toast.makeText(activity,
-                                    "Nearest hospital found at " + nearestDist + " km",
+                                    "Nearest hospital found at " + String.format("%.2f", nearestDist) + " km",
                                     Toast.LENGTH_SHORT).show();
                         });
 
@@ -91,7 +93,7 @@ public class HospitalFinder {
                     } else {
                         activity.runOnUiThread(() ->
                                 Toast.makeText(activity,
-                                        "No hospital available within 50 km",
+                                        "No hospital available within 1000 km",
                                         Toast.LENGTH_LONG).show()
                         );
 
@@ -112,20 +114,106 @@ public class HospitalFinder {
     private void assignToHospital(FirebaseFirestore db, String caseId, AccidentReport data, String hospitalId) {
         db.collection("Accidents")
                 .document(caseId)
-                .update("assignedHospitalId", hospitalId,
-                        "status", "Pending");
+                .update(
+                        "assignedHospitalId", hospitalId,
+                        "status", "Pending",
+                        "declinedHospitals", data.getDeclinedHospitals()
+                )
+                .addOnSuccessListener(aVoid -> {
+                    activity.runOnUiThread(() ->
+                            Toast.makeText(activity,
+                                    "Case assigned to hospital successfully",
+                                    Toast.LENGTH_SHORT).show()
+                    );
+                })
+                .addOnFailureListener(e -> {
+                    activity.runOnUiThread(() ->
+                            Toast.makeText(activity,
+                                    "Failed to assign hospital: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show()
+                    );
+                });
     }
 
     private void updateStatusNoHospital(FirebaseFirestore db, String caseId) {
         db.collection("Accidents")
                 .document(caseId)
-                .update("status", "No hospital available within 50 km")
+                .update("status", "No hospital available within 1000 km")
                 .addOnSuccessListener(aVoid -> {
+                    activity.runOnUiThread(() ->
+                            Toast.makeText(activity,
+                                    "No hospitals available in range",
+                                    Toast.LENGTH_LONG).show()
+                    );
                 })
                 .addOnFailureListener(e -> {
                     activity.runOnUiThread(() ->
                             Toast.makeText(activity,
                                     "Failed to update status: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show()
+                    );
+                });
+    }
+
+    /**
+     * Handles hospital decline and finds next nearest hospital
+     */
+    public void handleHospitalDecline(String caseId, String currentHospitalId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // First, fetch the accident report to get current data
+        db.collection("Accidents")
+                .document(caseId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        AccidentReport accidentData = documentSnapshot.toObject(AccidentReport.class);
+
+                        if (accidentData != null) {
+                            accidentData.addDeclinedHospital(currentHospitalId);
+
+                            List<String> declinedList = (List<String>) documentSnapshot.get("declinedHospitals");
+                            if (declinedList != null) {
+                                for (String hospitalId : declinedList) {
+                                    accidentData.addDeclinedHospital(hospitalId);
+                                }
+                            }
+
+                            db.collection("Accidents")
+                                    .document(caseId)
+                                    .update(
+                                            "declinedHospitals", FieldValue.arrayUnion(currentHospitalId),
+                                            "assignedHospitalId", ""
+                                    )
+                                    .addOnSuccessListener(aVoid -> {
+                                        activity.runOnUiThread(() ->
+                                                Toast.makeText(activity,
+                                                        "Searching for next nearest hospital...",
+                                                        Toast.LENGTH_SHORT).show()
+                                        );
+
+                                        findNearestHospital(caseId, accidentData, accidentData.getDeclinedHospitals());
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        activity.runOnUiThread(() ->
+                                                Toast.makeText(activity,
+                                                        "Failed to update declined hospitals: " + e.getMessage(),
+                                                        Toast.LENGTH_SHORT).show()
+                                        );
+                                    });
+                        }
+                    } else {
+                        activity.runOnUiThread(() ->
+                                Toast.makeText(activity,
+                                        "Accident report not found",
+                                        Toast.LENGTH_SHORT).show()
+                        );
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    activity.runOnUiThread(() ->
+                            Toast.makeText(activity,
+                                    "Error fetching accident data: " + e.getMessage(),
                                     Toast.LENGTH_SHORT).show()
                     );
                 });

@@ -293,26 +293,12 @@ public class HospitalDashboardActivity extends AppCompatActivity {
     }
 
     private void declineCase(String caseId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Toast.makeText(this,
+                "Case declined. Searching for another hospital...",
+                Toast.LENGTH_SHORT).show();
 
-        db.collection("Accidents")
-                .document(caseId)
-                .update("declinedHospitals", currentHospitalId,
-                        "assignedHospitalId", ""
-                )
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this,
-                            "Case declined. Searching for another hospital...",
-                            Toast.LENGTH_SHORT).show();
-                    HospitalFinder finder = new HospitalFinder(this);
-                    List<String> excludedHospitals = Collections.emptyList();
-                    AccidentReport AccidentReport = new AccidentReport();
-                    finder.findNearestHospital(caseId, AccidentReport, excludedHospitals);
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this,
-                                "Failed to decline case: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show());
+        HospitalFinder finder = new HospitalFinder(this);
+        finder.handleHospitalDecline(caseId, currentHospitalId);
     }
 
     @Override

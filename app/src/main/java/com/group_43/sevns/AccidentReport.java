@@ -23,7 +23,7 @@ public class AccidentReport {
 
     public AccidentReport(String id, double latitude, double longitude, String phoneNumber,
                           String description, String address, String assignedHospitalId, String driverId,
-                          long timestamp, String status,boolean completed, String responseMessage) {
+                          long timestamp, String status, boolean completed, String responseMessage) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -51,12 +51,27 @@ public class AccidentReport {
     public long getTimestamp() { return timestamp; }
     public String getStatus() { return status; }
     public boolean isCompleted() { return completed; }
+    public String getResponseMessage() { return responseMessage; }
 
+    public List<String> getDeclinedHospitals() {
+        if (declinedHospitals == null) {
+            declinedHospitals = new ArrayList<>();
+        }
+        return declinedHospitals;
+    }
 
-    // Setters
     public void setId(String id) { this.id = id; }
-    public void setAssignedHospitalId(String assignedHospitalId) { this.assignedHospitalId = assignedHospitalId; }
     public void setStatus(String status) { this.status = status; }
+
+
+    public void addDeclinedHospital(String hospitalId) {
+        if (declinedHospitals == null) {
+            declinedHospitals = new ArrayList<>();
+        }
+        if (hospitalId != null && !hospitalId.isEmpty() && !declinedHospitals.contains(hospitalId)) {
+            declinedHospitals.add(hospitalId);
+        }
+    }
 
     @Override
     public String toString() {
