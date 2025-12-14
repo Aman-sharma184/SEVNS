@@ -14,8 +14,7 @@ public class HospitalFinder {
     private static final int RADIUS_INCREMENT_KM = 5;
     private static final int MAX_RADIUS_KM = 50;
 
-    private final Activity activity;   // to use runOnUiThread + Toast
-
+    private final Activity activity;
     public HospitalFinder(Activity activity) {
         this.activity = activity;
     }
@@ -70,7 +69,6 @@ public class HospitalFinder {
                         float nearestDist = hospitalsInRange.get(0).distance;
 
                         activity.runOnUiThread(() -> {
-                            // You can also return the value via callback
                             Toast.makeText(activity,
                                     "Nearest hospital found at " + nearestDist + " km",
                                     Toast.LENGTH_SHORT).show();
@@ -90,6 +88,14 @@ public class HospitalFinder {
 
                         findHospitalsInRadius(db, caseId, accidentData, newRadius, excludedHospitals);
 
+                    } else {
+                        activity.runOnUiThread(() ->
+                                Toast.makeText(activity,
+                                        "No hospital available within 50 km",
+                                        Toast.LENGTH_LONG).show()
+                        );
+
+                        updateStatusNoHospital(db, caseId);
                     }
 
                 })
@@ -110,6 +116,21 @@ public class HospitalFinder {
                         "status", "Pending");
     }
 
+    private void updateStatusNoHospital(FirebaseFirestore db, String caseId) {
+        db.collection("Accidents")
+                .document(caseId)
+                .update("status", "No hospital available within 50 km")
+                .addOnSuccessListener(aVoid -> {
+                })
+                .addOnFailureListener(e -> {
+                    activity.runOnUiThread(() ->
+                            Toast.makeText(activity,
+                                    "Failed to update status: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show()
+                    );
+                });
+    }
+
     private static class HospitalDistance {
         String hospitalId;
         float distance;
@@ -120,4 +141,3 @@ public class HospitalFinder {
         }
     }
 }
-

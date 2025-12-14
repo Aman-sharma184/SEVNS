@@ -670,10 +670,11 @@ public class DriverMapActivity extends AppCompatActivity {
         db.collection("Accidents")
                 .document(DocumentId)
                 .update("status", "Completed",
-                        "completed", true)
+                        "completed", true,
+                        "driverId", "")
                 .addOnSuccessListener(unused -> {
                     db.collection("Drivers")
-                            .whereEqualTo("Driver_ID", currentDriverId)
+                            .whereEqualTo("Driver_ID", DriverId)
                             .get()
                             .addOnSuccessListener(querySnapshot -> {
                                 if (!querySnapshot.isEmpty()) {

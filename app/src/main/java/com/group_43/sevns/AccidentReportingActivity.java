@@ -51,7 +51,6 @@ public class AccidentReportingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.accident_reporting);
 
-        // ---------- UI INITIALIZATION ----------
         addressTextView = findViewById(R.id.addressTextView);
         tvStatus = findViewById(R.id.tvStatus);
         editPhone = findViewById(R.id.editPhone);
@@ -161,45 +160,6 @@ public class AccidentReportingActivity extends AppCompatActivity {
                 runOnUiThread(() -> addressTextView.setText("Error fetching address: " + e.getMessage()));
             }
         }).start();
-    }
-
-    private void assignToHospital(FirebaseFirestore db, String caseId, AccidentReport accidentData, String hospitalId) {
-        accidentData.setAssignedHospitalId(hospitalId);
-        accidentData.setStatus("pending");
-
-        db.collection("Accidents")
-                .document(caseId)
-                .set(accidentData)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Report sent to nearest hospital!", Toast.LENGTH_SHORT).show();
-                    navigateToStatus(caseId);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void markAsNoHospitalAvailable(FirebaseFirestore db, String caseId, AccidentReport accidentData) {
-        accidentData.setStatus("no_hospital_available");
-
-        db.collection("Accidents")
-                .document(caseId)
-                .set(accidentData)
-                .addOnSuccessListener(aVoid -> {
-                    tvStatus.setText("Status: No hospital available within 100 km");
-                    Toast.makeText(this, "No hospital available in your area", Toast.LENGTH_LONG).show();
-                    navigateToStatus(caseId);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private float calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        float[] results = new float[1];
-        Location.distanceBetween(lat1, lon1, lat2, lon2, results);
-        return results[0] / 1000; // Convert meters to km
     }
 
     private static String generateCaseId() {
