@@ -70,14 +70,12 @@ public class DriverMapActivity extends AppCompatActivity {
 
     private boolean isFirstLocationUpdate = true;
     private Handler routeUpdateHandler = new Handler(Looper.getMainLooper());
-    private static final long ROUTE_UPDATE_INTERVAL = 30000;
-    private static final float MIN_DISTANCE_FOR_UPDATE = 50f;
+    private static final float MIN_DISTANCE_FOR_UPDATE = 50f; // 50 meters
     private GeoPoint lastRouteUpdateLocation;
     private String currentDriverId, DriverId;
 
     private boolean isRouteBeingCalculated = false;
 
-    // Journey states
     private enum JourneyState {
         TO_ACCIDENT,
         AT_ACCIDENT,

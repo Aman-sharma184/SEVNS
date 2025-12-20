@@ -50,8 +50,6 @@ public class AccidentReport {
     public String getdriverId() { return driverId; }
     public long getTimestamp() { return timestamp; }
     public String getStatus() { return status; }
-    public boolean isCompleted() { return completed; }
-    public String getResponseMessage() { return responseMessage; }
 
     public List<String> getDeclinedHospitals() {
         if (declinedHospitals == null) {

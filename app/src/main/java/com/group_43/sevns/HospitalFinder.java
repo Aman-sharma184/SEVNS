@@ -13,7 +13,7 @@ public class HospitalFinder {
 
     private static final int INITIAL_RADIUS_KM = 10;
     private static final int RADIUS_INCREMENT_KM = 5;
-    private static final int MAX_RADIUS_KM = 1000;
+    private static final int MAX_RADIUS_KM = 500;
 
     private final Activity activity;
 
@@ -93,7 +93,7 @@ public class HospitalFinder {
                     } else {
                         activity.runOnUiThread(() ->
                                 Toast.makeText(activity,
-                                        "No hospital available within 1000 km",
+                                        "No hospital available within 500 km",
                                         Toast.LENGTH_LONG).show()
                         );
 
@@ -138,7 +138,7 @@ public class HospitalFinder {
     private void updateStatusNoHospital(FirebaseFirestore db, String caseId) {
         db.collection("Accidents")
                 .document(caseId)
-                .update("status", "No hospital available within 1000 km")
+                .update("status", "No hospital available within 500 km")
                 .addOnSuccessListener(aVoid -> {
                     activity.runOnUiThread(() ->
                             Toast.makeText(activity,
@@ -155,13 +155,9 @@ public class HospitalFinder {
                 });
     }
 
-    /**
-     * Handles hospital decline and finds next nearest hospital
-     */
     public void handleHospitalDecline(String caseId, String currentHospitalId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // First, fetch the accident report to get current data
         db.collection("Accidents")
                 .document(caseId)
                 .get()
